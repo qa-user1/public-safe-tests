@@ -1,0 +1,238 @@
+const C = require('../../fixtures/constants');
+const S = require('../../fixtures/settings');
+const D = require('../../fixtures/data');
+const api = require('../../api-utils/api-spec');
+const ui = require('../../pages/ui-spec');
+
+let orgAdmin = S.getUserData(S.userAccounts.orgAdmin);
+let powerUser = S.getUserData(S.userAccounts.powerUser);
+let office_1 = S.selectedEnvironment.office_1;
+let permissionGroup_officeAdmin = S.selectedEnvironment.regularUser_permissionGroup;
+
+function set_preconditions_for_adding_Person_with_all_fields(testContext) {
+    ui.app.log_title(testContext);
+
+    cy.restoreLocalStorage();
+    api.auth.get_tokens(orgAdmin);
+    api.users.update_current_user_settings(orgAdmin.id, C.currentDateTimeFormat, C.currentDateFormat)
+    D.generateNewDataSet(false);
+    api.org_settings.enable_all_Person_fields();
+}
+
+function set_preconditions_for_adding_Person_with_reduced_number_of_fields(testContext, fieldsToKeepEnabled) {
+    ui.app.log_title(testContext);
+
+    cy.restoreLocalStorage();
+    api.auth.get_tokens(orgAdmin);
+    api.users.update_current_user_settings(orgAdmin.id, C.currentDateTimeFormat, C.currentDateFormat)
+    D.generateNewDataSet(true);
+    api.org_settings.disable_Person_fields(fieldsToKeepEnabled);
+    api.org_settings.disable_Case_fields();
+}
+
+describe('Add Person', function () {
+
+    context('1. Org Admin -- all fields enabled', function () {
+
+        context('All fields enabled', function () {
+
+            it('1.1. -- redirect to View Added Person & Add-Edit-Delete Address', function () {
+
+                set_preconditions_for_adding_Person_with_all_fields(this);
+
+                ui.open_base_url();
+                ui.menu.click_Add__Person();
+                ui.addPerson.populate_all_fields(D.newPerson)
+                    .add_person_address(D.newPersonAddress)
+                    .select_post_save_action(C.postSaveActions.viewAddedPerson)
+                    .click_Save()
+                    .verify_toast_message(C.toastMsgs.saved);
+                ui.personView.verify_Person_View_page_is_open()
+                ui.addPerson.verify_added_address(D.newPersonAddress)
+
+                cy.log('🟢🟢 Edit Address 🟢🟢')
+                    ui.app.click_button(C.buttons.edit)
+                ui.personView.verify_values_on_Edit_form(D.newPerson)
+                    .click_button(C.buttons.edit)
+                ui.addPerson.edit_person_address(D.editedPersonAddress)
+                    .click_button(C.buttons.updateAddress)
+                    .verify_toast_message_('Saved!')
+                    .verify_added_address(D.editedPersonAddress)
+
+                cy.log('🟢🟢 Delete Address 🟢🟢')
+                    ui.app.click_button(C.buttons.delete)
+                    .click_button(C.buttons.ok)
+                    .verify_text_is_visible('Deleted!')
+                    .verify_text_is_visible('(No addresses)')
+                // TODO: Set as Default, View History
+            });
+        });
+
+        context('Optional fields disabled ', function () {
+            before(function () {
+                set_preconditions_for_adding_Person_with_reduced_number_of_fields(this);
+            })
+
+            it('1.2. First & Last Name populated -- redirect to Add Person page again', function () {
+
+                api.auth.get_tokens(orgAdmin);
+                api.cases.add_new_case(D.newCase.caseNumber);
+                ui.app.open_newly_created_case_via_direct_link()
+                    .select_tab(C.tabs.people)
+                    .click_element_on_active_tab(C.buttons.addPerson);
+                ui.addPerson.verify_Add_Person_page_is_open()
+                    .verify_Case_Number_is_populated_on_enabled_input_field(D.newCase.caseNumber)
+                    .populate_all_fields(D.newPerson)
+                    .select_post_save_action(C.postSaveActions.addPerson)
+                    .click_Save()
+                    .verify_toast_message_(C.toastMsgs.saved)
+                    .verify_text_is_present_on_main_container(C.labels.addPerson.title)
+                    .verify_Case_Number_is_populated_on_enabled_input_field(D.newCase.caseNumber)
+                    .open_newly_created_person_via_direct_link()
+                ui.personView.verify_Person_View_page_is_open()
+                    .click_button(C.buttons.edit)
+                    .verify_values_on_Edit_form(D.newPerson)
+            })
+
+            it('1.3. Business Name populated only -- redirect to Add Item page', function () {
+                api.auth.get_tokens(orgAdmin);
+                api.org_settings.disable_Person_fields([C.personFields.businessName]);
+                D.newPerson.firstName = null
+                D.newPerson.lastName = null
+                D.newPerson.businessName = D.randomNo
+
+                ui.open_base_url();
+                ui.menu.click_Add__Person();
+                ui.addPerson.populate_all_fields(D.newPerson)
+                    .select_post_save_action(C.postSaveActions.addItem)
+                    .click_Save()
+                    .verify_toast_message_(C.toastMsgs.saved);
+                ui.addItem.verify_text_is_present_on_main_container(C.labels.addItem.title)
+                    .verify_Case_Number_is_populated_on_enabled_input_field()
+                    .open_newly_created_person_via_direct_link()
+                ui.personView.verify_Person_View_page_is_open()
+                    .click_button(C.buttons.edit)
+                    .verify_values_on_Edit_form(D.newPerson)
+            })
+
+            it('1.4. redirect to Case View page & Change Person Type and Case Note', function () {
+                api.auth.get_tokens(orgAdmin);
+                D.generateNewDataSet(true);
+                ui.open_base_url();
+                //  api.cases.add_new_case()
+                ui.menu.click_Add__Person();
+                ui.addPerson.populate_all_fields(D.newPerson)
+                    .select_post_save_action(C.postSaveActions.viewCase)
+                    .click_Save()
+                    .verify_toast_message(C.toastMsgs.saved);
+                ui.caseView.verify_Case_View_page_is_open(D.newPerson.caseNumber)
+                    .select_tab(C.tabs.people)
+                    .search_by_specific_value(D.newPerson.firstName)
+                    .select_checkbox_on_first_table_row_on_active_tab()
+                    .click_Actions()
+                    .click_option_on_expanded_menu(C.buttons.changePersonTypeOrCaseNote)
+
+                cy.log('🟢🟢 Change Person Type or Case Note 🟢🟢')
+                ui.personView.change_person_type_or_case_note(D.editedPerson)
+                    .click_button(C.buttons.ok)
+                    .verify_toast_message("Saved!")
+                    .enable_all_standard_columns_on_the_grid(C.pages.caseViewPeopleTab)
+                    .verify_content_of_specific_table_row_by_provided_column_title_and_value(0, "Person Type", D.editedPerson.personType)
+                    .verify_content_of_specific_table_row_by_provided_column_title_and_value(0, "Case Note", D.editedPerson.caseNote)
+                    .click_Actions()
+
+                cy.log('🟢🟢 Remove Selected Person 🟢🟢')
+                    ui.app.click_option_on_expanded_menu(C.buttons.removeSelectedPerson)
+                    .verify_modal_content([
+                        'Are you sure you want to remove these people from the case?',
+                        D.newPerson.firstName])
+                    .click_button(C.buttons.removeFromCase)
+                    .verify_toast_message("Success")
+                    .verify_text_is_NOT_present_on_main_container(D.newPerson.firstName)
+            })
+        })
+    })
+
+    context('2. Power User -- all permissions in Office- all fields enabled', function () {
+
+        context('All fields enabled', function () {
+
+            before(function () {
+                set_preconditions_for_adding_Person_with_all_fields(this);
+            })
+
+            it('2.1. verify that user can add all values', function () {
+
+                api.auth.get_tokens(orgAdmin);
+                api.permissions
+                    .update_ALL_permissions_for_an_existing_Permission_group
+                    (permissionGroup_officeAdmin, true, true, true, true)
+
+                api.permissions.assign_office_based_permissions_to_user(
+                    powerUser.id,
+                    office_1.id, permissionGroup_officeAdmin.id);
+
+                api.auth.get_tokens(powerUser);
+                api.users.update_current_user_settings(powerUser.id, C.currentDateTimeFormat, C.currentDateFormat)
+
+                ui.menu.reload_page()
+                    .click_Add__Person();
+                ui.addPerson.populate_all_fields(D.newPerson)
+                    .select_post_save_action(C.postSaveActions.viewAddedPerson)
+                    .click_Save()
+                    .verify_toast_message(C.toastMsgs.saved);
+                ui.personView.verify_Person_View_page_is_open()
+                    .click_button(C.buttons.edit)
+                    .verify_values_on_Edit_form(D.newPerson)
+            })
+        })
+
+        context('Optional fields disabled', function () {
+
+            before(function () {
+                set_preconditions_for_adding_Person_with_reduced_number_of_fields(this);
+            })
+
+            it('3.1. --- with required Custom Form filled out, all required fields on Form', function () {
+                D.newPerson.personType = D.newPerson.personTypelinkedToRequiredForm1
+                D.newPerson.personTypeId = D.newPerson.personTypeIdlinkedToRequiredForm1
+                D.newPerson = Object.assign(D.newPerson, D.newCustomFormData)
+
+                api.auth.get_tokens(powerUser);
+                ui.open_base_url();
+                ui.menu.click_Add__Person();
+                ui.addPerson.populate_all_fields(D.newPerson)
+                    .verify_number_of_required_fields_marked_with_asterisk(12)
+                    .verify_Save_button_is_disabled()
+                    .populate_all_fields_on_Custom_Form(D.newCustomFormData)
+                    .select_post_save_action(C.postSaveActions.viewAddedPerson)
+                    .click_Save()
+                    .verify_toast_message(C.toastMsgs.saved);
+                ui.personView.verify_Person_View_page_is_open()
+                    .click_button(C.buttons.edit)
+                    .verify_values_on_Edit_form(D.newPerson, true)
+            })
+
+            it('3.2. --- with required Custom Form but not filled out, all optional fields on Form', function () {
+
+                api.auth.get_tokens(orgAdmin);
+                D.generateNewDataSet(true);
+                D.newPerson.personType = D.newPerson.personTypelinkedToRequiredForm2
+                D.newPerson.personTypeId = D.newPerson.personTypeIdlinkedToRequiredForm2
+                D.newPerson = Object.assign(D.newPerson, D.defaultCustomFormData)
+
+                api.auth.get_tokens(powerUser);
+                ui.open_base_url();
+                ui.menu.click_Add__Person();
+                ui.addPerson.populate_all_fields(D.newPerson)
+                    .verify_number_of_required_fields_marked_with_asterisk(0)
+                    .select_post_save_action(C.postSaveActions.viewAddedPerson)
+                    .click_Save()
+                    .verify_toast_message(C.toastMsgs.saved);
+                ui.personView.verify_Person_View_page_is_open()
+                    .click_button(C.buttons.edit)
+                    .verify_values_on_Edit_form(D.newPerson, true)
+            });
+        });
+    })
+})
