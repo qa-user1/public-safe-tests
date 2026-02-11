@@ -1,0 +1,111 @@
+name: SECURE - Smoke Tests
+
+on:
+  workflow_dispatch
+
+permissions: write-all
+
+env:
+  CYPRESS_PROJECT_ID: roe2q2
+
+jobs:
+  cypress-tests:
+    runs-on:  [self-hosted]
+
+    outputs:
+      start_time: ${{ steps.start-time.outputs.start_time }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - spec_group: src/specs/smoke/main-actions-org1.js
+            org_number: 1
+          - spec_group: src/specs/smoke/main-actions-org2.js
+            org_number: 2
+          - spec_group: src/specs/smoke/services-org3.js
+            org_number: 3
+          - spec_group: src/specs/smoke/services-org4.js
+            org_number: 4
+
+    steps:
+      - name: Capture start time
+        id: start-time
+        run: echo "start_time=$(date +%s)" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Cypress tests
+        run: >
+          npx cypress run --headless --browser chrome --record
+          --group "org-${{ matrix.org_number }}"
+          --ci-build-id "${{ github.run_id }}"
+          --spec ${{ matrix.spec_group }}
+          --key bb142adb-388a-4eec-bf54-6836cf98ce76
+          --env environment=secure,orgNum=${{ matrix.org_number }},apiTimeout=60000,defaultCommandTimeout=60000
+        env:
+          CI: true
+
+  slack-notification:
+    runs-on: [self-hosted]
+    needs: [cypress-tests]
+    if: always() && needs.cypress-tests.result != 'cancelled'
+
+    steps:
+      - name: Set date
+        run: echo "NOW=$(date +'%B_%d')" >> $GITHUB_ENV
+
+      - name: Calculate test duration
+        run: |
+          END_TIME=$(date +%s)
+          START_TIME=${{ needs.cypress-tests.outputs.start_time }}
+          DURATION=$((END_TIME - START_TIME))
+
+          MIN=$((DURATION / 60))
+          SEC=$((DURATION % 60))
+
+          echo "TEST_DURATION=${MIN}m ${SEC}s" >> $GITHUB_ENV
+
+      # ✅ ALL TESTS PASSED
+      - name: Slack – All tests passed
+        if: needs.cypress-tests.result == 'success'
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SECURE }}
+          SLACK_COLOR: good
+          SLACK_TITLE: "✅ Cypress Tests Passed ( ***** SECURE **** )"
+          SLACK_MESSAGE: |
+            ✅✅✅✅✅✅ All Cypress tests passed successfully  ✅✅✅✅✅✅
+
+            ⏱️ Total Duration: *${{ env.TEST_DURATION }}*
+
+            📊 Cypress Dashboard:
+            https://cloud.cypress.io/projects/${{ env.CYPRESS_PROJECT_ID }}/branches/${{ github.ref_name }}/runs
+
+          SLACK_USERNAME: Cypress_Tests
+          SLACK_SHOW_REF: false
+          SLACK_SHOW_EVENT: false
+
+      # ❌ SOME TESTS FAILED
+      - name: Slack – Tests failed
+        if: needs.cypress-tests.result != 'success'
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_SECURE }}
+          SLACK_COLOR: danger
+          SLACK_TITLE: "❌ Cypress Tests Failed ( ***** SECURE **** )"
+          SLACK_MESSAGE: |
+            🚨🚨🚨🚨🚨🚨Some Cypress tests failed 🚨🚨🚨🚨🚨🚨
+
+            ⏱️ Total Duration: *${{ env.TEST_DURATION }}*
+
+            🔍 Please check the failures:
+
+            📊 Cypress Dashboard:
+            https://cloud.cypress.io/projects/${{ env.CYPRESS_PROJECT_ID }}/branches/${{ github.ref_name }}/runs
+          SLACK_USERNAME: Cypress_Tests
+          SLACK_SHOW_REF: false
+          SLACK_SHOW_EVENT: false
