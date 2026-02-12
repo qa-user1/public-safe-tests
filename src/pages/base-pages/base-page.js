@@ -2197,10 +2197,10 @@ let basePage = class BasePage {
     }
 
     click_checkbox_to_select_specific_row(rowNumber, tableIndex = 0) {
-        this.pause(1)
+        this.pause(2)
         this.wait_until_spinner_disappears()
         firstCheckboxOnTableBody().scrollIntoView().should('be.visible')
-        this.pause(1)
+        this.pause(2)
         this.wait_until_spinner_disappears()
 
         if (tableIndex === 0) {
