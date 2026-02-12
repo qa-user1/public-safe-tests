@@ -48,7 +48,8 @@ for (let i = 0; i < 1; i++) {
         it('1. Export Selected Items - Excel (Case View - Items Tab)', function () {
             ui.app.open_newly_created_case_via_direct_link()
                 .select_tab('Items')
-                .select_checkbox_on_specific_table_row(0)
+                cy.wait(1000)
+                ui.app.select_checkbox_on_specific_table_row(0)
                 .click_element_on_active_tab(C.buttons.export)
                 .click_option_on_expanded_menu('Selected - Excel');
         });
