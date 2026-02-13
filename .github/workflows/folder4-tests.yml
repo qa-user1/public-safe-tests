@@ -42,6 +42,7 @@ jobs:
           - spec_group: mass-update-items-spec
           - spec_group: search-case-spec
           - spec_group: search-checkouts-spec
+          - spec_group: search-item-spec
           - spec_group: user-actions-spec
           - spec_group: workflows-spec
 
