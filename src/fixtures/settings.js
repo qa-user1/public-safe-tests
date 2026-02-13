@@ -2058,12 +2058,12 @@ S.PENTEST_1 = {
         id: 105156,
     },
     oldClosedCase: {
-        id: 7199043,
-        caseNumber: 'TestCase1',
-        createdDate: '04/27/2022',
+        id: 12932318,
+        caseNumber: 'AutomatedTest-Closed Case',
+        createdDate: '02/13/2026',
         offenseDate: '04/27/2022',
-        reviewDate: '10/27/2022',
-        closedDate: '10/27/2022',
+        reviewDate: '02/13/2027',
+        closedDate: '02/01/2026',
     },
     oldActiveCase: {
         id: 7733747,
@@ -2627,7 +2627,7 @@ S.PENTEST_3 = {
         createdDate: '12/28/2022',
         offenseDate: '12/20/2022',
         reviewDate: '12/30/2022',
-        closedDate: '09/10/2025',
+        closedDate: '02/01/2026',
     },
     oldActiveCase: {
         id: 7743098,
