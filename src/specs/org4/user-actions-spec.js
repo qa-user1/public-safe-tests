@@ -105,7 +105,8 @@ describe('User Admin -- Actions', function () {
             .verify_specific_column_has_specific_value_in_all_rows('Division', D.editedUser.division)
             .verify_specific_column_has_specific_value_in_all_rows('Division', D.editedUser.division)
             .verify_specific_column_has_specific_value_in_all_rows('Unit', D.editedUser.unit)
-            .verify_specific_column_has_specific_value_in_all_rows('Supervisor', D.editedUser.supervisors)
+        cy.wait(1000)
+        ui.userAdmin.verify_specific_column_has_specific_value_in_all_rows('Supervisor', D.editedUser.supervisors)
             .verify_specific_column_has_specific_value_in_all_rows('Supervisor', D.editedUser.supervisorGroup)
             .verify_specific_column_does_NOT_contain_specific_value_in_specific_rows('Supervisor', D.newUser.supervisors)
     });

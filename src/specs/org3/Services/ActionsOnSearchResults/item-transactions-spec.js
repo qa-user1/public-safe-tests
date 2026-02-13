@@ -122,7 +122,6 @@ for (let i = 0; i < 1; i++) {
             });
         });
 
-        //TODO: Sumejja should check further
         it('4. Verify Dispose transaction with Uploaded Media and No Signature', function () {
             ui.app.log_title(this);
             api.auth.get_tokens(orgAdmin);
@@ -153,7 +152,6 @@ for (let i = 0; i < 1; i++) {
             });
         });
 
-        //TODO: Sumejja should check further
         it('5. Verify Undispose transaction with Uploaded Media and No Signature', function () {
             ui.app.log_title(this);
             api.auth.get_tokens(orgAdmin);
@@ -185,7 +183,6 @@ for (let i = 0; i < 1; i++) {
             });
         });
 
-        //TODO: Sumejja should check further
         it('6. Verify Move transaction with Uploaded Media and No Signature', function () {
 
             ui.app.log_title(this);
