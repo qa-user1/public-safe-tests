@@ -2070,7 +2070,7 @@ S.PENTEST_1 = {
         caseNumber: 'AutomatedTest-Active Case',
         createdDate: '05/17/2009',
         offenseDate: '05/15/2009',
-        reviewDate: '01/18/2023'
+        reviewDate: '05/06/2024'
     },
     recentCase: {
         id: 5446732,

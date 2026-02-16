@@ -1171,7 +1171,7 @@ describe('Cases Search', function () {
             .verify_content_of_first_row_in_results_table(D.case0.caseNumber)
     });
 
-    it.only('12.6 REVIEW DATE -- older than X', function () {
+    it('12.6 REVIEW DATE -- older than X', function () {
         //data are fixed in org3 pentest, failing in org2, but need to check what will be after executing
         //tests related to redistribute cases with past date
         let caseNo = S.selectedEnvironment.oldActiveCase.caseNumber;
@@ -1183,7 +1183,7 @@ describe('Cases Search', function () {
         ui.menu.click_Search__Case();
         ui.searchCase
             .enter_Case_Number(equals, caseNo)
-            .enter_Review_Date(olderThanX, numberOfDaysSinceReviewDate -5)
+            .enter_Review_Date(olderThanX, numberOfDaysSinceReviewDate -1)
             .click_Search()
             .verify_text_is_present_on_main_container(caseNo)
     });
