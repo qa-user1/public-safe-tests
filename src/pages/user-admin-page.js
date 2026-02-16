@@ -71,14 +71,14 @@ export default class UserAdminPage extends BasePage {
         this.wait_until_spinner_disappears();
         this.define_API_request_to_be_awaited('POST', '/api/users/search', 'searchUsers')
         this.enterValue(searchInput, email)
-        this.pause(1)
+        this.pause(2)
         this.press_ENTER(searchInput)
 
         this.wait_response_from_API_call('searchUsers')
 
         if (!isActive) this.select_Inactive_Users()
 
-        this.pause(1)
+        this.pause(2)
         this.wait_until_spinner_disappears();
 
         if (numberOfUsersExpected > 0){

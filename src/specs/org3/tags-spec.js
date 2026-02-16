@@ -173,7 +173,7 @@ for (let i = 0; i < 1; i++) {
                 .type_Tag_value_and_verify_if_option_is_available_on_dropdown(D.editedTag.name, true)
         });
 
-        it.only('3. GROUP Tag with New Tag GROUP created at once, edit Tag Group - check availability of tags based on permissions, access to group and item storage location', function () {
+        it('3. GROUP Tag with New Tag GROUP created at once, edit Tag Group - check availability of tags based on permissions, access to group and item storage location', function () {
             api.auth.get_tokens(admin);
             D.getTagsData('Group');
 
