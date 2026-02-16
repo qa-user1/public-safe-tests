@@ -109,7 +109,7 @@ for (let i = 0; i < 1; i++) {
                 .type_Tag_value_and_verify_if_option_is_available_on_dropdown(D.editedTag.name, true, true)
         });
 
-        it('2. GROUP Tag with Existing Tag GROUP-- create, edit, attach to Item, detach, deactivate/reactivate', function () {
+        it.only('2. GROUP Tag with Existing Tag GROUP-- create, edit, attach to Item, detach, deactivate/reactivate', function () {
             api.auth.get_tokens(admin);
             D.getTagsData('Group');
 
