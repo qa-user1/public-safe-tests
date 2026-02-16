@@ -168,6 +168,7 @@ describe('Add Case', function () {
             it('1.8 Org Admin - Adding Item to the Closed Case --> auto-opening the case', function () {
                 api.auth.get_tokens(orgAdmin)
                 D.generateNewDataSet(true);
+                api.org_settings.disable_Item_fields()
                 api.cases.add_new_case(D.newCase.caseNumber);
                 ui.app.open_newly_created_case_via_direct_link()
                 ui.caseView.click_Edit()
@@ -191,6 +192,7 @@ describe('Add Case', function () {
 
             it('1.9 Org Admin - Closing Case with undisposed Items', function () {
                 api.auth.get_tokens(orgAdmin)
+                api.org_settings.disable_Item_fields()
                 D.generateNewDataSet(true);
                 api.cases.add_new_case(D.newCase.caseNumber);
                 api.items.add_new_item(true)
