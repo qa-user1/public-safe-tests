@@ -8,7 +8,7 @@ let orgAdmin = S.getUserData(S.userAccounts.orgAdmin);
 
 describe('Edit User', function () {
 
-    it.only('1 Edit newly added user, change all values, verify on the grid, and check all/active/inactive filters', function () {
+    it('1 Edit newly added user, change all values, verify on the grid, and check all/active/inactive filters', function () {
             ui.app.log_title(this);
             api.auth.get_tokens(orgAdmin);
             D.getUserData();
