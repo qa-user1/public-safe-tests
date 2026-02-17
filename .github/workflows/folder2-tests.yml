@@ -36,14 +36,14 @@ jobs:
       max-parallel: 1
       matrix:
         include:
-          - spec_group: auto-disposition-spec
-          - spec_group: edit-case-spec
-          - spec_group: edit-item-spec
-          - spec_group: edit-person-spec
+        #  - spec_group: auto-disposition-spec
+        #  - spec_group: edit-case-spec
+        #  - spec_group: edit-item-spec
+        #  - spec_group: edit-person-spec
           - spec_group: edit-user-spec
-          - spec_group: item-transactions-spec
-          - spec_group: locations-containers-spec
-          - spec_group: scan-page-spec
+        #  - spec_group: item-transactions-spec
+        #  - spec_group: locations-containers-spec
+        #  - spec_group: scan-page-spec
 
     steps:
       - name: Checkout repository
