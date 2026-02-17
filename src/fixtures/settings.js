@@ -1972,27 +1972,27 @@ S.PENTEST_1 = {
     units: {
         div1_unit1: {
             name: 'UnitA',
-            id: null
+            id: 63
         },
         div1_unit2: {
             name: 'UnitB',
-            id: null
+            id: 64
         },
         div1_unit3: {
             name: 'UnitC',
-            id: null
+            id: 2378
         },
         div2_unit1: {
             name: 'UnitA',
-            id: null
+            id: 2376
         },
         div2_unit2: {
             name: 'UnitB',
-            id: null
+            id: 2377
         },
         div2_unit3: {
             name: 'UnitC',
-            id: null
+            id: 85
         }
     },
     forms: {
