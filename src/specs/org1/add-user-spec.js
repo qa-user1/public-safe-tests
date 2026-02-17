@@ -33,7 +33,7 @@ describe('Add User', function () {
     });
 
     context('1.1 Org Admin', function () {
-        it.only('1.1.1. add user with all fields -- log in with newly created account', function () {
+        it('1.1.1. add user with all fields -- log in with newly created account', function () {
             ui.app.log_title(this);
             D.generateNewDataSet();
             D.newUser.permissionGroups = [S.selectedEnvironment.regularUser_permissionGroup.name]
