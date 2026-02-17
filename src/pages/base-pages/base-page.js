@@ -747,6 +747,7 @@ let basePage = class BasePage {
     };
 
     scroll_and_click(buttonTitle) {
+        this.pause(2)
         buttonByTitle(buttonTitle).scrollIntoView();
         buttonByTitle(buttonTitle).should('be.visible');
         buttonByTitle(buttonTitle).should('be.enabled');
