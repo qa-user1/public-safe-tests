@@ -2,7 +2,7 @@ const { defineConfig } = require('cypress');
 const del = require('del')
 
 module.exports = defineConfig({
-    projectId: process.env.CYPRESS_PROJECT_ID || 'emmmms',
+    projectId: process.env.CYPRESS_PROJECT_ID || '9t2xr5',
     fixturesFolder: 'src/fixtures',
     screenshotsFolder: 'screenshots',
     videosFolder: 'report/videos',

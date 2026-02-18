@@ -10,7 +10,7 @@ let person = S.getUserData(S.selectedEnvironment.person);
 
 let startTime;
 
-for (let i = 0; i < 1; i++) {
+for (let i = 0; i < 10; i++) {
     describe('Item Transactions on Action on Search Results', function () {
 
         before(function () {
@@ -159,6 +159,7 @@ for (let i = 0; i < 1; i++) {
             api.auth.get_tokens(orgAdmin);
             D.generateNewDataSet()
             api.items.add_new_item()
+            cy.wait(3000)
             api.transactions.dispose_item()
             ui.menu.click_Search__Item()
             ui.searchItem.search_with_minimum_required_fields_and_click_Actions_on_Search_Results
