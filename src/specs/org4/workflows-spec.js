@@ -141,9 +141,10 @@ describe('Workflows', function () {
                 .click_Save();
 
             D.editedCase = D.getEditedCaseData(D.newCase.caseNumber)
-            api.org_settings.enable_all_Case_fields();
+            api.org_settings.enable_all_Case_fields()
             api.cases.add_new_case()
                 .edit_newly_added_case(true);
+
              ui.app.open_newly_created_case_via_direct_link()
                 .select_tab('Tasks')
                 .click_button('Details')

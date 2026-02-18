@@ -35,8 +35,27 @@ function get_token_status(selectedUser) {
     })
 }
 
+exports.set_static_token_for_all_API_requests = function (selectedUser) {
+     exports.get_tokens_without_page_load(selectedUser)
+     exports.log_out(selectedUser)
+
+    cy.getLocalStorage("headers").then(headers => {
+        let updatedHeaders = JSON.parse(headers);
+        updatedHeaders.organizationid = selectedUser.organizationId
+        updatedHeaders.authorization = 'Bearer ' + selectedUser.staticToken
+        updatedHeaders.staticToken = true
+
+        cy.clearLocalStorage("headers");
+        cy.setLocalStorage("headers", JSON.stringify(updatedHeaders));
+        cy.saveLocalStorage()
+    })
+    cy.removeLocalStorage("refresh-token")
+    cy.log('🟠 Using STATIC_TOKEN for API requests 🟠')
+}
+
 exports.get_tokens = function (selectedUser, arrayOfPropertiesToRetain, specificOffice, userFromLocalStorage) {
 
+    cy.log(' 🟢 Using regular tokens for API requests  🟢 ')
     //   ui.app.define_API_request_to_be_awaited('POST', '', 'all_POST_Requests')
     ui.app.define_API_request_to_be_awaited('GET', '', 'all_GET_Requests')
     // ui.app.define_all_dashboard_GET_requests();

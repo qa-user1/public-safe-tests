@@ -1044,11 +1044,19 @@ C.pages = {
         numberOfStandardColumns: 16,
         numberOfStandardColumnsReduced: 14
     },
+    taskViewItemsTab: {
+        numberOfStandardColumns: null,
+        numberOfAllColumnsWithDispoStatusEnabled: 26,
+        numberOfStandardColumnsReduced: null,
+    },
     import: {
         url: 'flat-import'
     },
     orgSettings: {
         url: 'organizations/settings'
+    },
+    storageLocations: {
+        url: 'locations'
     },
     caseViewPeopleTab: {
         numberOfStandardColumns: 13,

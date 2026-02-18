@@ -402,7 +402,7 @@ let basePage = class BasePage {
     }
 
     verify_selected_office(orgAndOfficeName) {
-       cy.get('.nav-office').should('contain', orgAndOfficeName)
+        cy.get('.nav-office').should('contain', orgAndOfficeName)
         return this;
     };
 
@@ -685,7 +685,7 @@ let basePage = class BasePage {
 
     click_Search() {
         cy.intercept('POST', '**/search').as('search')
-       // this.click(C.buttons.search, mainContainer());
+        // this.click(C.buttons.search, mainContainer());
         cy.get('#search-button').click()
         cy.wait('@search')
         this.wait_until_spinner_disappears()
@@ -1719,6 +1719,17 @@ let basePage = class BasePage {
         return this
     };
 
+    define_typeahead_API_request_to_be_awaited(methodType, pathname, alias) {
+        alias = alias || pathname
+
+        cy.intercept({
+            method: methodType,
+            pathname,               // e.g. "/api/locations/typeahead"
+        }).as(alias);
+
+        return this;
+    }
+
     define_API_request_to_be_awaited(methodType, partOfRequestUrl, alias) {
         if (!alias) {
             alias = partOfRequestUrl;
@@ -1726,14 +1737,6 @@ let basePage = class BasePage {
         cy.intercept(methodType, '**' + `${partOfRequestUrl}` + '**', (req) => {
             req.continue(); // Explicitly pass through to backend
         }).as(alias);
-        return this;
-    }
-
-    define_API_request_to_be_awaited2(methodType, partOfRequestUrl, alias) {
-        if (!alias) {
-            alias = partOfRequestUrl;
-        }
-        cy.intercept(methodType, new RegExp(`${partOfRequestUrl}(\\?.*)?$`), req => req.continue()).as(alias);
         return this;
     }
 
@@ -1801,6 +1804,58 @@ let basePage = class BasePage {
             })
         return this;
     };
+
+    wait_typeahead_for_search(alias, expectedSearch, status = 200, {contains = false, timeout} = {}) {
+        const waitOpts = timeout ? {timeout} : undefined;
+
+        const matches = (actual) =>
+            contains ? String(actual || '').includes(expectedSearch)
+                : String(actual || '') === expectedSearch;
+
+        const recurse = () =>
+            cy.wait('@' + alias, waitOpts).then((interception) => {
+                const code = interception.response?.statusCode ?? interception.status;
+                expect(code).to.eq(status);
+
+                const actualSearch = interception.request?.query?.search;
+
+                if (matches(actualSearch)) {
+                    return interception; // ✅ this is the one you wanted
+                }
+
+                // Not the right search term → keep waiting for the next call
+                return recurse();
+            });
+
+        return recurse();
+    }
+
+    verify_response_from_API_method(alias, status = 200, expectedPartialBody, options = {}) {
+        const {
+            propertyToSaveToLocalStorage,
+        } = options;
+
+        cy.wait('@' + alias).then((interception) => {
+            const responseStatus = interception.status || interception.response?.statusCode;
+            expect(responseStatus).to.equal(status);
+
+            const body = interception.response?.body;
+            expect(body, `Missing response body for @${alias}`).to.exist;
+
+            if (expectedPartialBody) {
+                expect(body).to.deep.include(expectedPartialBody);
+            }
+            if (propertyToSaveToLocalStorage) {
+                cy.setLocalStorage(propertyToSaveToLocalStorage, JSON.stringify(body));
+                if (S.selectedEnvironment?.[propertyToSaveToLocalStorage]) {
+                    S.selectedEnvironment[propertyToSaveToLocalStorage] =
+                        Object.assign(S.selectedEnvironment[propertyToSaveToLocalStorage], body);
+                }
+            }
+        });
+
+        return this;
+    }
 
     wait_response_from_API_call_extended(alias, status = 200, propertyToSaveToLocalStorage, timeout = 1000) {
         let requestOccurred = false;
@@ -2197,10 +2252,10 @@ let basePage = class BasePage {
     }
 
     click_checkbox_to_select_specific_row(rowNumber, tableIndex = 0) {
-        this.pause(1)
+        this.pause(2)
         this.wait_until_spinner_disappears()
         firstCheckboxOnTableBody().scrollIntoView().should('be.visible')
-        this.pause(1)
+        this.pause(2)
         this.wait_until_spinner_disappears()
 
         if (tableIndex === 0) {
@@ -2386,6 +2441,7 @@ let basePage = class BasePage {
     };
 
     verify_content_of_first_row_in_results_table(content, clickReloadIconBetweenAttempts = false) {
+        cy.verifyTextAndRetry(() => mainContainer().invoke('text'), 'Showing 1 to', {clickReloadIconBetweenAttempts: clickReloadIconBetweenAttempts});
         this.wait_until_spinner_disappears()
         cy.verifyTextAndRetry(() => firstRowInResultsTable().invoke('text'), content, {clickReloadIconBetweenAttempts: clickReloadIconBetweenAttempts});
         this.wait_until_spinner_disappears()
@@ -2433,68 +2489,8 @@ let basePage = class BasePage {
     verify_content_of_specific_cell_in_first_table_row(columnTitle, cellContent, headerCellTag = 'th') {
 
         this.verify_content_of_specific_table_row_by_provided_column_title_and_value(0, columnTitle, cellContent, headerCellTag)
-        // firstRowInResultsTable(0).within(($list) => {
-        //     if (cellContent) {
-        //         if (this.isObject(cellContent)) {
-        //             for (let property in cellContent) {
-        //                 resultsTableHeaderFromRoot().contains(headerCellTag, columnTitle).invoke('index').then((i) => {
-        //                     cy.get('td').eq(i).invoke('text').then(function (textFound) {
-        //                         assert.include(textFound, cellContent[property]);
-        //                     })
-        //
-        //                 })
-        //             }
-        //         } else if (Array.isArray(cellContent)) {
-        //             cellContent.forEach(function (value) {
-        //                 resultsTableHeaderFromRoot().contains(headerCellTag, columnTitle).invoke('index').then((i) => {
-        //                     cy.get('td').eq(i).invoke('text').then(function (textFound) {
-        //                         assert.include(textFound, value);
-        //                     })
-        //                 })
-        //             })
-        //         } else {
-        //             resultsTableHeaderFromRoot().contains(headerCellTag, columnTitle).not('ng-hide').invoke('index').then((i) => {
-        //                 cy.get('td').eq(i).invoke('text').then(function (textFound) {
-        //                     assert.include(textFound, cellContent.toString().trim());
-        //                 })
-        //             });
-        //         }
-        //     }
-        // });
         return this;
     };
-
-    //need a review for this replaced method -> old one is above
-    //    verify_content_of_specific_cell_in_first_table_row(columnTitle, cellContent, headerCellTag = 'th') {
-    //        firstRowInResultsTable().within(($list) => {
-    //            if (cellContent) {
-    //                if (this.isObject(cellContent)) {
-    //                    for (let property in cellContent) {
-    //                        resultsTableHeaderFromRoot().contains(headerCellTag, columnTitle).invoke('index').then((i) => {
-    //                            cy.get('td').eq(i).should(($cell) => {
-    //                                expect($cell.text()).to.include(cellContent[property]);
-    //                            });
-    //                        });
-    //                    }
-    //                } else if (Array.isArray(cellContent)) {
-    //                    cellContent.forEach(function (value) {
-    //                        resultsTableHeaderFromRoot().contains(headerCellTag, columnTitle).invoke('index').then((i) => {
-    //                            cy.get('td').eq(i).should(($cell) => {
-    //                                expect($cell.text()).to.include(value);
-    //                            });
-    //                        });
-    //                    });
-    //                } else {
-    //                    resultsTableHeaderFromRoot().contains(headerCellTag, columnTitle).not('ng-hide').invoke('index').then((i) => {
-    //                        cy.get('td').eq(i).should(($cell) => {
-    //                            expect($cell.text().trim()).to.include(cellContent.toString().trim());
-    //                        });
-    //                    });
-    //                }
-    //            }
-    //        });
-    //        return this;
-    //    };
 
     verify_content_of_specific_table_row_by_provided_column_title_and_value(rowIndex, columnTitle, cellContent, headerCellTag = 'th', isCoCTable = false) {
         const self = this;
@@ -2588,6 +2584,7 @@ let basePage = class BasePage {
                                 ).to.contain(expectedValue.toString().trim());
                             });
 
+
                     });
             });
 
@@ -2637,6 +2634,7 @@ let basePage = class BasePage {
         headerCellTag = 'th',
         isCoCTable = false
     ) {
+        let self = this
         let resultsTableHeader;
         let tableStriped;
 
@@ -2658,18 +2656,29 @@ let basePage = class BasePage {
             .then((colIndex) => {
                 rows.forEach((rowNumber) => {
                     const rowIndex = rowNumber - 1; // convert to 0-based
-                    tableStriped()
+                    // tableStriped()
+                    //     .find('tr')
+                    //     .eq(rowIndex)
+                    //     .find('td')
+                    //     .eq(colIndex)
+                    //     .invoke('text')
+                    //     .then((text) => {
+                    //         expect(
+                    //             text.trim(),
+                    //             `Expected column "${columnTitle}" to have value "${expectedValue}" in row ${rowNumber}`
+                    //         ).to.contain(expectedValue.toString().trim());
+                    //     });
+
+                    const getCell = () => tableStriped()
                         .find('tr')
                         .eq(rowIndex)
                         .find('td')
                         .eq(colIndex)
-                        .invoke('text')
-                        .then((text) => {
-                            expect(
-                                text.trim(),
-                                `Expected column "${columnTitle}" to have value "${expectedValue}" in row ${rowNumber}`
-                            ).to.contain(expectedValue.toString().trim());
-                        });
+
+                    const values = Array.isArray(expectedValue) ? expectedValue : [expectedValue];
+                    values.forEach((value) => {
+                        self.verify_text(getCell, value);
+                    });
                 });
             });
         return this;
@@ -2760,9 +2769,7 @@ let basePage = class BasePage {
                                         `Expected column "${columnTitle}" to be blank in row ${rowIndex + 1}`
                                     ).to.eq('');
                                 });
-
                         });
-
                 });
         });
 
@@ -2813,10 +2820,8 @@ let basePage = class BasePage {
                                 ).to.eq('');
                             });
                     });
-
                 });
         });
-
         return this;
     }
 
@@ -4381,6 +4386,7 @@ let basePage = class BasePage {
                 .wait(300)
                 .check({force: true});
         });
+        this.wait_until_spinner_disappears()
         return this;
     }
 };

@@ -10,7 +10,7 @@ let user = S.getUserData(S.userAccounts.orgAdmin);
 let startTime;
 
 
-for (let i = 0; i < 1; i++) {
+for (let i = 0; i < 10; i++) {
     describe('Exporter ', function () {
 
         beforeEach(function () {
@@ -49,7 +49,7 @@ for (let i = 0; i < 1; i++) {
             ui.app.open_newly_created_case_via_direct_link()
                 .select_tab('Items')
             //this test was failing on GitHub and only static wait was helpful
-                cy.wait(1000)
+            cy.wait(1000)
                 ui.app.select_checkbox_on_specific_table_row(0)
                 .click_element_on_active_tab(C.buttons.export)
                 .click_option_on_expanded_menu('Selected - Excel');

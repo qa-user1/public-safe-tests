@@ -8,24 +8,28 @@ import BasePage from "./base-pages/base-page";
 
 let
     locationPlusIcon = (locName) => cy.contains(locName).parent('td').find('.fa-plus'),
-    locationName = (locName) => cy.contains(locName).parent('td'),
-    locationCheckbox = (locName) => locationName(locName).parent('tr').find('td').eq(0).find('input'),
-    locationItems = (locName) => locationName(locName).parent('tr').find('td').eq(2),
-    legacyBarcode = (locName) => locationName(locName).parent('tr').find('td').eq(4),
-    isActive = (locName) => locationName(locName).parent('tr').find('td').eq(5),
-    isStorage = (locName) => locationName(locName).parent('tr').find('td').eq(6),
-    isContainer = (locName) => locationName(locName).parent('tr').find('td').eq(7),
-    locationGroups = (locName) => locationName(locName).parent('tr').find('td').eq(8).find('[ng-if="col.field !== \'count\'"]'),
+    rowWithLocationName = (locName) => cy.contains(locName).parent('td'),
+    locationCheckbox = (locName) => rowWithLocationName(locName).parent('tr').find('td').eq(0).find('input'),
+    locationItems = (locName) => rowWithLocationName(locName).parent('tr').find('td').eq(2),
+    legacyBarcode = (locName) => rowWithLocationName(locName).parent('tr').find('td').eq(4),
+    isActive = (locName) => rowWithLocationName(locName).parent('tr').find('td').eq(5),
+    isStorage = (locName) => rowWithLocationName(locName).parent('tr').find('td').eq(6),
+    isContainer = (locName) => rowWithLocationName(locName).parent('tr').find('td').eq(7),
+    locationGroups = (locName) => rowWithLocationName(locName).parent('tr').find('td').eq(8).find('[ng-if="col.field !== \'count\'"]'),
     addStorageLocationModal = e => cy.get('[ng-model="locationsToAdd"]'),
-    searchLocationField = e => cy.get('[ng-model="model.locationId"]'),
+    searchLocationField = e => cy.get('[ng-model="locationText"]'),
     storageLocationNameField = e => cy.get('[name="locationName"]'),
-    storageLocationGroupField = e => cy.get('[ng-model="location.groups"]'),
+    storageLocationGroups_inputField = e => cy.get('input[placeholder="Groups"]'),
+    storageLocationGroups_containerOnModal = e => cy.get('.modal-content').find('[ng-model="location.groups"]'),
     storageLocationLegacyBarcodeField = e => cy.get('[ng-model="location.legacyBarcode"]'),
-    storageLocationCanStoreHereToggleButton = e => cy.get('[ng-model="location.canStoreHere"]'),
-    storageLocationActiveToggleButton = e => cy.get('[ng-model="location.active"]'),
-    storageLocationContainerToggleButton = e => cy.get('[ng-model="location.isContainer"]'),
+    storageLocationCanStoreHereToggleButton = e => cy.get('[ng-model="toggle.canStoreHere"]'),
+    storageLocationCanStoreHereYesNoButton = e => cy.get('[ng-model="location.canStoreHere"]'),
+    storageLocationActiveYesNoButton = e => cy.get('[ng-model="location.active"]'),
+    storageLocationContainerYesNoButton = e => cy.get('[ng-model="location.isContainer"]'),
     moveLocationToToggleButton = e => cy.get('[ng-model="toggle.moveLocationTo"]'),
-    moveLocationToDropdownOption = e => cy.get('[placeholder="type ‘/‘ or start typing a location name"]').eq(1)
+    moveLocationToDropdownOption = e => cy.get('.modal-content').find('[typeahead="l.path as l.id for l in getLocation($viewValue)"]'),
+    locationTypeaheadOption = e => cy.get('[ng-repeat="match in matches track by $index"]'),
+    locationsGrid = e => cy.get('[id="tg-table"]')
 
 export default class StorageLocationsPage extends BasePage {
 
@@ -35,6 +39,11 @@ export default class StorageLocationsPage extends BasePage {
 
     //************************************ ACTIONS ***************************************//
 
+    open_direct_url_for_page() {
+        this.open_url_and_wait_all_GET_requests_to_finish(S.base_url + '/#/' + C.pages.storageLocations.url)
+        return this
+    }
+
     expand_Location(name) {
         locationPlusIcon(name).click()
         return this;
@@ -42,25 +51,50 @@ export default class StorageLocationsPage extends BasePage {
 
     verify_location_properties(locationObject) {
         const locName = locationObject.name;
-
         locationItems(locName).should('contain', locationObject.items);
         legacyBarcode(locName).should('contain', locationObject.legacyBarcode);
-        isActive(locName).should('contain', locationObject.isActive);
-        isStorage(locName).should('contain', locationObject.isStorage);
+        isActive(locName).should('contain', locationObject.active);
+        isStorage(locName).should('contain', locationObject.canStoreHere);
         isContainer(locName).should('contain', locationObject.isContainer);
-        locationGroups(locName).should('contain', locationObject.groups);
+
+        if (locationObject.groups === null) {
+            locationGroups(locName).invoke('text')
+                .then((text) => {
+                    expect(
+                        text.trim(),
+                        `Expected Permission Groups to be blank for location ${locName}`
+                    ).to.eq('');
+                });
+        } else {
+            locationObject.groups.forEach(group => {
+                locationGroups(locName).should('contain', group);
+            })
+        }
         return this;
     };
 
-    add_storage_location_modal(data) {
-        addStorageLocationModal().type(data.name);
+    add_one_or_more_storage_locations(arrayOfLocNames) {
+        arrayOfLocNames.forEach(locName => {
+            this.enterValue(addStorageLocationModal, locName)
+        })
         return this;
     }
 
-    search_for_location_on_storage_location_page(data) {
-        searchLocationField().type(data)
-        this.pause(2)
-        searchLocationField().type('{enter}')
+    enter_storage_location_in_search(storageLoc, shouldAppearInTypeahead = true) {
+        this.define_API_request_to_be_awaited_with_last_part_of_url('GET', 'search=' + storageLoc, storageLoc)
+        this.clearAndEnterValue(searchLocationField, storageLoc)
+
+        if (shouldAppearInTypeahead) {
+            this.wait_typeahead_for_search(
+                storageLoc,
+                storageLoc,
+                200,
+                {contains: false} // set true if you want partial match
+            );
+            locationTypeaheadOption().click();
+        } else {
+            this.verify_response_from_API_method(storageLoc, 200, {locations: []}, storageLoc)
+        }
         return this;
     }
 
@@ -95,39 +129,51 @@ export default class StorageLocationsPage extends BasePage {
         return this
     }
 
-    populate_all_fields_and_turn_on_all_toggles_on_edit_storage_location_modal(data) {
-        storageLocationNameField().clear().type(data.name);
-        storageLocationGroupField().clear().type(data.groups).type('{enter}')
-        storageLocationLegacyBarcodeField().clear().type(data.legacyBarcode);
-        //storageLocationContainerToggleButton().click()
+    populate_all_fields_on_edit_storage_location_modal(data) {
+        this.clearAndEnterValue(storageLocationNameField, data.name)
 
-        storageLocationCanStoreHereToggleButton()
+        for (let i = 0; i < data.groups.length; i++) {
+            this.enterValue(storageLocationGroups_inputField, data.groups[i])
+            cy.get('[repeat="group in groups"]').contains('span', data.groups[i]).click()
+        }
+        this.clearAndEnterValue(storageLocationLegacyBarcodeField, data.legacyBarcode)
+
+        storageLocationCanStoreHereYesNoButton()
             .find('.toggle.btn.btn-sm')
             .then(($btn) => {
-                if ($btn.hasClass('btn-default') && $btn.hasClass('off')) {
+                if (data.canStoreHere && $btn.hasClass('off')) {
                     cy.wrap($btn).click();
-                } else if ($btn.hasClass('btn-primary')) {
-                    cy.log('Toggle is already ON');
+                } else if (!data.canStoreHere && !$btn.hasClass('off')) {
+                    cy.wrap($btn).click();
+                } else {
+                    cy.log('Toggle is already in proper state: ' + data.canStoreHere);
                 }
             });
-        storageLocationContainerToggleButton()
+
+        storageLocationContainerYesNoButton()
             .find('.toggle.btn.btn-sm')
             .then(($btn) => {
-                if ($btn.hasClass('btn-default') && $btn.hasClass('off')) {
+                if (data.isContainer && $btn.hasClass('off')) {
                     cy.wrap($btn).click();
-                } else if ($btn.hasClass('btn-primary')) {
-                    cy.log('Toggle is already ON');
+                } else if (!data.isContainer && !$btn.hasClass('off')) {
+                    cy.wrap($btn).click();
+                } else {
+                    cy.log('Toggle is already in proper state: ' + data.isContainer);
                 }
             });
-        storageLocationActiveToggleButton()
+
+        storageLocationActiveYesNoButton()
             .find('.toggle.btn.btn-sm')
             .then(($btn) => {
-                if ($btn.hasClass('btn-default') && $btn.hasClass('off')) {
+                if (data.active && $btn.hasClass('off')) {
                     cy.wrap($btn).click();
-                } else if ($btn.hasClass('btn-primary')) {
-                    cy.log('Toggle is already ON');
+                } else if (!data.active && !$btn.hasClass('off')) {
+                    cy.wrap($btn).click();
+                } else {
+                    cy.log('Toggle is already in proper state: ' + data.active);
                 }
             });
+
         moveLocationToToggleButton()
             .find('.toggle.btn.btn-sm')
             .then(($btn) => {
@@ -137,9 +183,10 @@ export default class StorageLocationsPage extends BasePage {
                     cy.log('Toggle is already ON');
                 }
             });
-        moveLocationToDropdownOption().type(data.parentMoveLocation)
-        this.pause(1)
-        moveLocationToDropdownOption().type('{enter}')
+
+        this.enterValue(moveLocationToDropdownOption, data.parentLocName)
+        locationTypeaheadOption().should('be.visible').click()
+
         return this;
     }
 
@@ -150,8 +197,20 @@ export default class StorageLocationsPage extends BasePage {
             .eq(tableIndex)
             .contains('td', regex)
             .within(() => {
-                cy.get('[ng-class="location.icon"]').click({ force: true });
+                cy.get('[ng-class="location.icon"]').click();
             });
+        return this;
+    }
+
+    select_row_on_the_grid_that_contains_specific_location(locName) {
+        locationsGrid().within(($tableBody) => {
+            cy.contains('td', locName).parent('tr').find('[ng-model="location.selected"]').click()
+        })
+        return this;
+    };
+
+    click_Hide_Containers() {
+        cy.get('[ng-model="hideContainers"]').click()
         return this;
     }
 
@@ -164,16 +223,33 @@ export default class StorageLocationsPage extends BasePage {
             .parents('tr')
             .within(() => {
                 cy.get('[title="Delete Storage Location"]')
-                    .click({ force: true });
+                    .click({force: true});
             });
         return this;
     }
 
-click_active_storage_location_toggle_button(){
-        storageLocationActiveToggleButton().click();
+    change_state_of_Active_location_toggle() {
+        storageLocationActiveYesNoButton().click();
         return this;
-}
+    }
 
+    enter_new_Permission_Groups(groups, removeExistingGroups = true) {
+        if (removeExistingGroups) {
+            storageLocationGroups_containerOnModal().should('exist').within(() => {
+                cy.get('.ui-select-match-close').then($closeBtns => {
+                    if ($closeBtns.length) {
+                        cy.wrap($closeBtns).each($btn => cy.wrap($btn).click({force: true}));
+                    }
+                });
+            });
+        }
+
+        for (let i = 0; i < groups.length; i++) {
+            this.enterValue(storageLocationGroups_inputField, groups[i])
+            cy.get('[repeat="group in groups"]').contains('span', groups[i]).click()
+        }
+        return this;
+    }
 
 
 }

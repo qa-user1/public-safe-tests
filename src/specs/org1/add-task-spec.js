@@ -97,7 +97,7 @@ for (let i = 0; i < 1; i++) {
                         .select_assignees([D.newTask.userGroupName])
                         .click_Save_()
                         .verify_toast_message(C.toastMsgs.saved)
-                        .store_Task_Number_from_API_response_to_local_storage()
+                        .store_My_Tasks_API_response_to_local_storage()
                     ui.taskList.search_for_the_task(powerUser.firstName)
                         .sort_by_descending_order('Creation Date')
                         .verify_newly_created_task_is_shown_in_first_table_row(D.newTask.title)

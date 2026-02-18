@@ -66,7 +66,6 @@ for (let i = 0; i < 1; i++) {
                                 .click_button_on_modal('Save')
                                 .verify_toast_message('Processing')
                                 .verify_text_is_present_on_main_container('Container Move Jobs')
-                                .verify_text_is_NOT_present_on_main_container('Showing 0 to 0')
                                 .verify_content_of_first_row_in_results_table([D.container1.name, D.rootLoc2.name, 'Complete'], true)
                             ui.menu.click_Scan()
                             ui.scan.close_Item_In_Scan_List_alert(false)

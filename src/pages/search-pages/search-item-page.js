@@ -2,6 +2,7 @@ import Menu from "../menu";
 import BaseSearchPage from "../base-pages/base-search-page";
 import S from "../../fixtures/settings";
 import authApi from "../../api-utils/endpoints/auth";
+
 const C = require('../../fixtures/constants');
 const menu = new Menu();
 
@@ -88,9 +89,23 @@ export default class SearchItemPage extends BaseSearchPage {
         return this;
     };
 
-    enter_Storage_Location(storageLoc) {
-        storageLocationInput().type(storageLoc);
-        typeaheadOption().click();
+    enter_Storage_Location(storageLoc, shouldAppearInTypeahead = true) {
+        this.define_API_request_to_be_awaited_with_last_part_of_url('GET', 'search=' + storageLoc, storageLoc)
+        this.clearAndEnterValue(storageLocationInput, storageLoc)
+
+        if (shouldAppearInTypeahead){
+            this.wait_typeahead_for_search(
+                storageLoc,
+                storageLoc,
+                200,
+                {contains: false} // set true if you want partial match
+            );
+
+            typeaheadOption().click();
+        }
+        else{
+            this.verify_response_from_API_method(storageLoc, 200, {locations: []}, storageLoc)
+        }
         return this;
     };
 
@@ -143,6 +158,7 @@ export default class SearchItemPage extends BaseSearchPage {
             .click_Search()
 
         let that = this
+
         function checkIfButtonIsVisibleAndRetry(retries) {
             if (retries <= 0) {
                 throw new Error('Max retries reached');
@@ -175,6 +191,7 @@ export default class SearchItemPage extends BaseSearchPage {
                 }
             });
         }
+
         checkIfButtonIsVisibleAndRetry(3);
         return this;
     };
@@ -232,7 +249,7 @@ export default class SearchItemPage extends BaseSearchPage {
             ['Disposed By', dataObject.disposedByName],
             ['Disposal Notes', dataObject.disposalNotes],
             ['Additional Barcodes', dataObject.additionalBarcodes],
-           // ['Additional Barcodes', dataObject.barcodes],
+            // ['Additional Barcodes', dataObject.barcodes],
             ['Tags', dataObject.tags],
             ['Recovered At', dataObject.recoveryLocation],
             ['Recovered By', dataObject.recoveredByName],
@@ -285,12 +302,12 @@ export default class SearchItemPage extends BaseSearchPage {
         return this;
     }
 
-    choose_subset_type(data){
+    choose_subset_type(data) {
         subsetType().select(data);
         return this;
     }
 
-    type_percentage_or_number_of_items_on_item_subset_modal(data){
+    type_percentage_or_number_of_items_on_item_subset_modal(data) {
         percentageOrNumberOfItems().type(data.percentageOrNumberOfItems);
         return this;
     }

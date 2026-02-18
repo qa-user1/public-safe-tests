@@ -1940,7 +1940,8 @@ S.PENTEST_1 = {
             organizationId: 541,
             officeId: 1027,
             parentOrgNumber: 1,
-            orgAndOfficeName: "Web Test Automation #1 - Cypress Office 1"
+            orgAndOfficeName: "Web Test Automation #1 - Cypress Office 1",
+            staticToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InFhK29yZzFhZG1pbkB0cmFja2VycHJvZHVjdHMuY29tIiwiZW1haWwiOiJxYStvcmcxYWRtaW5AdHJhY2tlcnByb2R1Y3RzLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6IjQzMjc1IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvYWRtaW4iOiJGYWxzZSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL29yZ2FuaXphdGlvbklkIjoiNTQxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvb2ZmaWNlSWQiOiIxMDI3IiwicmVxdWlyZU1mYSI6IkZhbHNlIiwic2V0dXBNZmEiOiJGYWxzZSIsIm1mYVRva2VuIjoiIiwibmJmIjoxNzcwMzk2ODIxLCJleHAiOjIwODU5Mjk2MjEsImlhdCI6MTc3MDM5NjgyMSwiaXNzIjoiaHR0cHM6Ly90cmFja2VycHJvZHVjdHMuY29tIiwiYXVkIjoiYzczMmFjZTgzNGNkNDg1MTkwYTNlM2EyMzZhNmFjMWQifQ.GIkHrWCgXqNVLubXlpFcSmJ4WWrubJd0zG9opacwn4o'
         },
         powerUser: {
             id: 43356,
@@ -2214,7 +2215,8 @@ S.PENTEST_2 = {
             organizationId: 555,
             officeId: 1117,
             parentOrgNumber: 2,
-            orgAndOfficeName: "Web Test Automation #2 - Cypress Office 1"
+            orgAndOfficeName: "Web Test Automation #2 - Cypress Office 1",
+            staticToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InFhK29yZzJhZG1pbkB0cmFja2VycHJvZHVjdHMuY29tIiwiZW1haWwiOiJxYStvcmcyYWRtaW5AdHJhY2tlcnByb2R1Y3RzLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6IjQzMjc2IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvYWRtaW4iOiJGYWxzZSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL29yZ2FuaXphdGlvbklkIjoiNTU1IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvb2ZmaWNlSWQiOiIxMTE3IiwicmVxdWlyZU1mYSI6IkZhbHNlIiwic2V0dXBNZmEiOiJGYWxzZSIsIm1mYVRva2VuIjoiIiwibmJmIjoxNzcwMzk5NjA5LCJleHAiOjIwODU5MzI0MDksImlhdCI6MTc3MDM5OTYwOSwiaXNzIjoiaHR0cHM6Ly90cmFja2VycHJvZHVjdHMuY29tIiwiYXVkIjoiYzczMmFjZTgzNGNkNDg1MTkwYTNlM2EyMzZhNmFjMWQifQ.HtXKMHhQmdbVhroGllCVTF8bOB-V6dnzBkpKt_ASB4Y'
         },
         powerUser: {
             id: 43277,
@@ -2508,7 +2510,8 @@ S.PENTEST_3 = {
             organizationId: 556,
             officeId: 1118,
             parentOrgNumber: 3,
-            orgAndOfficeName: "Web Test Automation #3 - Cypress Office 1"
+            orgAndOfficeName: "Web Test Automation #3 - Cypress Office 1",
+            staticToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InFhK29yZzNhZG1pbkB0cmFja2VycHJvZHVjdHMuY29tIiwiZW1haWwiOiJxYStvcmczYWRtaW5AdHJhY2tlcnByb2R1Y3RzLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6IjQzNjY2IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvYWRtaW4iOiJGYWxzZSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL29yZ2FuaXphdGlvbklkIjoiNTU2IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvb2ZmaWNlSWQiOiIxMTE4IiwicmVxdWlyZU1mYSI6IkZhbHNlIiwic2V0dXBNZmEiOiJGYWxzZSIsIm1mYVRva2VuIjoiIiwibmJmIjoxNzcwMzk5NjQwLCJleHAiOjIwODU5MzI0NDAsImlhdCI6MTc3MDM5OTY0MCwiaXNzIjoiaHR0cHM6Ly90cmFja2VycHJvZHVjdHMuY29tIiwiYXVkIjoiYzczMmFjZTgzNGNkNDg1MTkwYTNlM2EyMzZhNmFjMWQifQ.-2MuZ52r-OulG1Xs92vMb_5R8yq3uuwZaxyaLerNzXA'
         },
         powerUser: {
             id: 43683,
@@ -2784,7 +2787,8 @@ S.PENTEST_4 = {
             organizationId: 557,
             officeId: 1119,
             parentOrgNumber: 4,
-            orgAndOfficeName: "Web Test Automation #4 - Cypress Office 1"
+            orgAndOfficeName: "Web Test Automation #4 - Cypress Office 1",
+            staticToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InFhK29yZzRhZG1pbkB0cmFja2VycHJvZHVjdHMuY29tIiwiZW1haWwiOiJxYStvcmc0YWRtaW5AdHJhY2tlcnByb2R1Y3RzLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6IjQzNzIwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvYWRtaW4iOiJGYWxzZSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL29yZ2FuaXphdGlvbklkIjoiNTU3IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvb2ZmaWNlSWQiOiIxMTE5IiwicmVxdWlyZU1mYSI6IkZhbHNlIiwic2V0dXBNZmEiOiJGYWxzZSIsIm1mYVRva2VuIjoiIiwibmJmIjoxNzcwNDAxMDM1LCJleHAiOjIwODU5MzM4MzUsImlhdCI6MTc3MDQwMTAzNSwiaXNzIjoiaHR0cHM6Ly90cmFja2VycHJvZHVjdHMuY29tIiwiYXVkIjoiYzczMmFjZTgzNGNkNDg1MTkwYTNlM2EyMzZhNmFjMWQifQ.dU8dsEIDMfRQdhYnYAbIqwS1LhWA_c92rJTKH5j1_Y8'
         },
         powerUser: {
             id: 43721,
@@ -2906,8 +2910,8 @@ S.PENTEST_4 = {
         caseNumber: 'AutomatedTest-Closed Case',
         createdDate: '01/05/2023',
         offenseDate: '12/21/2022',
-        reviewDate: '12/30/2022',
-        closedDate: '05/02/2023',
+        reviewDate: '11/15/2025',
+        closedDate: '02/20/2024',
     },
     oldActiveCase: {
         id: 7744372,

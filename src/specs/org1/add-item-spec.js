@@ -292,7 +292,6 @@ describe('Add Item', function () {
     context('2 Power User -- all permissions in Office, with and without access to Storage Location', function () {
 
         it('2.1 verify that user can add all values but can select only Storage Location(s) that s/he has access to', function () {
-           //TODO Sumejja should check this test in Org1
             ui.app.log_title(this);
             api.auth.get_tokens(orgAdmin);
             api.permissions
@@ -322,7 +321,7 @@ describe('Add Item', function () {
                 .enter_Case_Number_and_select_on_typeahead(D.newItem.caseNumber)
                 .select_Category(D.newItem.category)
                 .click_Next()
-                .enter_storage_location(inaccessibleLocation.name)
+                .enter_Storage_Location(inaccessibleLocation.name, false)
                 .verify_storage_location_typeahead_is_not_shown(inaccessibleLocation.name)
                 // .enter_storage_location(inaccessibleLocation.guid)
                 // .verify_storage_location_typeahead_is_not_shown()

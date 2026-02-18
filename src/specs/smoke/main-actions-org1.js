@@ -14,14 +14,15 @@ let powerUser = S.getUserData(S.userAccounts.powerUser);
 for (let i = 0; i < 1; i++) {
 
     it(' ^^^^^ Preconditions  ^^^^^ ', function () {
+        api.auth.set_static_token_for_all_API_requests(orgAdmin);
+         api.org_settings.enable_all_Case_fields()
+             .enable_all_Item_fields()
+             .enable_all_Person_fields()
         api.auth.get_tokens(orgAdmin);
-        api.org_settings.enable_all_Case_fields()
-            .enable_all_Item_fields()
-            .enable_all_Person_fields()
-            .update_org_settings(false, true)
-            .set_Org_Level_Case_Number_formatting(false, false, false, null)
+        api.org_settings.update_org_settings(false, true)
+             .set_Org_Level_Case_Number_formatting(false, false, false, null)
         api.users.update_current_user_settings(orgAdmin.id, DF.dateTimeFormats.short, DF.dateFormats.shortDate)
-    });
+     });
 
     describe('Case', function () {
         before(() => {

@@ -262,8 +262,19 @@ exports.assign_office_based_permissions_to_user = function (userObjectFromLocalS
     return this
 };
 
-exports.assign_user_to_User_Group = function (user, group) {
+exports.get_first_available_permission_group = function (excludedPermissionGroup) {
+    generic_request.GET(
+        '/api/groups',
+        "Fetching available permission groups via API",
+        'allPermissionGroups')
 
+    cy.getLocalStorage('allPermissionGroups').then(groups => {
+        let permissionGroupObject = JSON.parse(groups).find(item => item.name !== excludedPermissionGroup);
+        cy.setLocalStorage('PermissionGroupB', JSON.stringify(permissionGroupObject))
+    })
+};
+
+exports.assign_user_to_User_Group = function (user, group) {
     generic_request.PUT(
         '/api/usergroups/editUserGroup',
         body.generate_PUT_request_payload_for_assigning_user_to_User_Group(user, group),

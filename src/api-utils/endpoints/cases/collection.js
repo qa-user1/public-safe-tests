@@ -11,7 +11,6 @@ exports.add_new_case = function (caseNumber, caseObject, stringToStoreInLocalSto
         'Creating new case via API with ID_______',
         stringToStoreInLocalStorage,
     );
-
     exports.get_most_recent_case();
     return this;
 };

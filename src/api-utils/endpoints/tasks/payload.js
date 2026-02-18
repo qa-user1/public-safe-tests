@@ -58,6 +58,7 @@ exports.generate_PUT_request_payload_for_editing_existing_task_template = functi
     let body = {
         "id": taskTemplate.templateId,
         "active": true,
+        "isAssignedToRequired": taskTemplate.isAssignedToRequired,
         "emailUser": true,
         "taskDeliveryOption": 0,
         "taskEscalation": false,
