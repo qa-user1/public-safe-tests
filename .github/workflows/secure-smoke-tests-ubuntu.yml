@@ -6,7 +6,8 @@ on:
 permissions: write-all
 
 env:
-  CYPRESS_PROJECT_ID: roe2q2
+  CYPRESS_PROJECT_ID:
+ 9t2xr5
 
 jobs:
   cypress-tests:
