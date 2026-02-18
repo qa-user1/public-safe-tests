@@ -41,8 +41,7 @@ concurrency:
   cancel-in-progress: false   # don't cancel the previous run; queue this one instead
 
 env:
-  CYPRESS_PROJECT_ID:
- 9t2xr5
+  CYPRESS_PROJECT_ID: 9t2xr5
 
 jobs:
   cypress-tests:
