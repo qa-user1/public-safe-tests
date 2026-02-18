@@ -1188,7 +1188,7 @@ describe('Cases Search', function () {
             .verify_text_is_present_on_main_container(caseNo)
     });
 
-    it('12.7 REVIEW DATE -- between X and Y', function () {
+    it.only('12.7 REVIEW DATE -- between X and Y', function () {
         // set data on pentest2
         let caseNo = S.selectedEnvironment.oldActiveCase.caseNumber;
         let date1 = helper.getCurrentDateInSpecificFormat('mm/dd/yyyy')

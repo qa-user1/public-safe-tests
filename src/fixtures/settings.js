@@ -2637,8 +2637,8 @@ S.PENTEST_3 = {
         id: 7743098,
         caseNumber: 'AutomatedTest-Active Case',
         createdDate: '12/28/2022',
-        offenseDate: '12/20/2022',
-        reviewDate: '12/30/2022',
+        offenseDate: '12/21/2022',
+        reviewDate: '11/15/2027',
         caseReviewNotes: 'reviewNotes_122822788007',
     },
     recentCase: {

@@ -292,7 +292,6 @@ describe('Add Item', function () {
     context('2 Power User -- all permissions in Office, with and without access to Storage Location', function () {
 
         it('2.1 verify that user can add all values but can select only Storage Location(s) that s/he has access to', function () {
-           //TODO Sumejja should check this test in Org1
             ui.app.log_title(this);
             api.auth.get_tokens(orgAdmin);
             api.permissions
