@@ -59,7 +59,6 @@ jobs:
           --browser chrome
           --record
           --key 9f3a7951-174e-44ef-8b8c-d21426b05bef
- 
           --group "org-${{ matrix.spec_group }}"
           --tag "spec:${{ matrix.spec_group }},env:${{ github.event.inputs.environment }},org:${{ github.event.inputs.org_number }}"
           --ci-build-id "${{ github.run_id }}-${{ matrix.spec_group }}"

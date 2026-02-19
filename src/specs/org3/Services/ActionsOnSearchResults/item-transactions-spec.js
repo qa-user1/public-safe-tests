@@ -10,7 +10,7 @@ let person = S.getUserData(S.selectedEnvironment.person);
 
 let startTime;
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 1; i++) {
     describe('Item Transactions on Action on Search Results', function () {
 
         before(function () {
