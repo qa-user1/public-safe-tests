@@ -36,10 +36,10 @@ jobs:
       max-parallel: 1
       matrix:
         include:
-        #  - spec_group: Services/ActionsOnSearchResults/**/*.js
-        #  - spec_group: Services/Exporter/**/*.js
-          - spec_group: Services/Importer/import-users-spec.js
-        #  - spec_group: tags-spec.js
+          - spec_group: Services/ActionsOnSearchResults/**/*.js
+          - spec_group: Services/Exporter/**/*.js
+          - spec_group: Services/Importer/**/*.js
+          - spec_group: tags-spec.js
 
     steps:
       - name: Checkout repository

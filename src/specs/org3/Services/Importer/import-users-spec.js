@@ -22,6 +22,7 @@ describe('Import Users', function () {
         ui.importer.precheck_import_data(fileName, C.importTypes.users)
         ui.menu.click_Settings__User_Admin();
         ui.userAdmin.select_All_Users()
+        //This test was failing in Org #3 and only static wait was helpful
         cy.wait(3000)
         ui.userAdmin.search_for_user(D.newUser.email, 0)
             .verify_records_count_on_grid(0)
