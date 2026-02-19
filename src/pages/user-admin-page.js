@@ -69,6 +69,7 @@ export default class UserAdminPage extends BasePage {
 
     search_for_user(email, numberOfUsersExpected = 1, isActive = true) {
         this.wait_until_spinner_disappears();
+        this.pause(3)
         this.define_API_request_to_be_awaited('POST', '/api/users/search', 'searchUsers')
         this.pause(3)
         this.enterValue(searchInput, email)
