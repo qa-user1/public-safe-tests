@@ -2788,7 +2788,7 @@ S.PENTEST_4 = {
         },
         powerUser: {
             id: 43721,
-            guid: '19330c4f-8c86-ed11-832d-021f02b7478f'
+            guid: '79c803dd-da8c-ed11-832e-021f02b7478f'
         },
         basicUser: {
             id: 43722,
