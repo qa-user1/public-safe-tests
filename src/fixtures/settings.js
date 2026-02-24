@@ -3021,6 +3021,10 @@ S.PENTEST_4 = {
     tagA: {tagModelId: 16874, name: 'Tag_A__', color: "#4b9b62", tagUsedBy: 1},
     tagB: {tagModelId: 16875, name: 'Tag_B__', color: "#4b9b62", tagUsedBy: 1},
     tagC: {tagModelId: 16876, name: 'Tag_C__', color: "#4b9b62", tagUsedBy: 1},
+    tagGroup: {
+        name: 'AutoTest_TagGroup1',
+        id: 10470
+    },
 };
 
 S.PENTEST_1 = {...S.ALL_ENVS, ...S.allOrgsOnPentest, ...S.PENTEST_1};
