@@ -188,7 +188,7 @@ export default class UserAdminPage extends BasePage {
 
     select_permission_group_per_office(permissionGroup, officeName) {
         this.wait_until_label_appears('Permissions Matrix')
-        cy.pause(2)
+        this.pause(2)
         this.click_table_matrix_cell_based_on_column_name_and_unique_value_in_the_row(permissionGroup, officeName, 1)
         return this;
     };

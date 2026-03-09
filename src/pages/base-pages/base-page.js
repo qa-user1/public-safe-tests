@@ -108,6 +108,7 @@ let bodyContainer = e => cy.get('body'), tableBody = e => cy.get('.table-striped
     customFormsSectionOnMenuCustomization = e => cy.get('[is-open="customFieldsToggle.isOpen"]'),
     searchCustomFormsOnMenuCustomization = e => cy.get('[ng-model="options.customFormSearchField"]'),
     optionsOnMenuCustomization = e => cy.get('[is-open="optionsToggle.isOpen"]').first(),
+    columnsAvailableOnMenuCustomization = e => cy.get('[ng-if="options.pageSizeShow"]').parent('[ng-if="optionsToggle.isOpen"]'),
     standardColumnsOnMenuCustomization = e => cy.get('[ng-repeat="col in getStandardFields() | orderBy:\'name | translate\'"]'),
     columnsOnMenuCustomization = e => cy.get('[ng-class="col.visible ? \'glyphicon glyphicon-ok glyphicon-image-md glyphicon-gray\': \'glyphicon glyphicon-remove glyphicon-image-md glyphicon-gray\'"]'),
 
@@ -2114,6 +2115,18 @@ let basePage = class BasePage {
         this.wait_until_spinner_disappears()
         this.wait_all_GET_requests()
 
+        function clickTab (tabTitle) {
+            if (tabTitle === C.tabs.history) {
+                historyTab(tabTitle).should('be.visible').click()
+                historyTab(tabTitle).should('have.class', 'active')
+            } else if (tabTitle === C.tabs.tasks) {
+                cy.get('[active="activeTabs[\'tasks\']"]').click()
+            } else {
+                specificTab(tabTitle).should('be.visible').click()
+                specificTab(tabTitle).should('have.class', 'active')
+            }
+        }
+
         if (tabTitle === C.tabs.history) {
             historyTab(tabTitle).should('be.visible').click()
             historyTab(tabTitle).should('have.class', 'active')
@@ -2123,8 +2136,16 @@ let basePage = class BasePage {
             specificTab(tabTitle).should('be.visible').click()
             specificTab(tabTitle).should('have.class', 'active')
         }
+
         this.pause(1)
         this.wait_until_spinner_disappears()
+
+        cy.get('.nav-tabs').find('li.active').invoke('text')
+            .then(function (txt) {
+                if (txt.trim() !== tabTitle) {
+                    clickTab(tabTitle)
+                }
+            })
         return this;
     };
 
@@ -4094,11 +4115,52 @@ let basePage = class BasePage {
         return this;
     }
 
+    // old one, generally works fine, but trying to refactor that below
+    // enable_all_standard_columns_on_the_grid(page, isDispoStatusEnabled) {
+    //     let numnerOfFieldsOnMenuCustomization = isDispoStatusEnabled ? page.numberOfAllColumnsWithDispoStatusEnabled : page.numberOfStandardColumns
+    //
+    //     menuCustomization().click()
+    //     optionsOnMenuCustomization().click()
+    //     pageSizeAndColumnsContianer().within(($list) => {
+    //         enabledColumnsOnMenuCustomization().its('length').then(function (length) {
+    //             if (length < numnerOfFieldsOnMenuCustomization + 1) {
+    //                 disabledColumnsOsOnMenuCustomization().its('length').then(function (length) {
+    //                     // iterate through options that have 'X' icon within "Options" section the number of times that matches the number of 'disabled columns' (exclude 3 'X' icons in pageSize section)
+    //                     let numberOfPageSizeOptionsWithXIcon = (page === C.pages.taskList) ? 1 : 3
+    //
+    //                     for (let i = 0; i < length - numberOfPageSizeOptionsWithXIcon; i++) {
+    //
+    //                         //click 4th 'X' icon within 'Options' section one (1st disabled column)
+    //                         disabledColumnsOsOnMenuCustomization().eq(numberOfPageSizeOptionsWithXIcon).click()
+    //
+    //                         if (i < length - 1) {
+    //                             menuCustomizationFromRoot().click()
+    //                         }
+    //                     }
+    //                 })
+    //
+    //             } else {
+    //                 menuCustomizationFromRoot().click()
+    //             }
+    //         })
+    //     })
+    //     return this
+    // }
+
     enable_all_standard_columns_on_the_grid(page, isDispoStatusEnabled) {
-        let numnerOfFieldsOnMenuCustomization = isDispoStatusEnabled ? page.numberOfAllColumnsWithDispoStatusEnabled : page.numberOfStandardColumns
+       // let numnerOfFieldsOnMenuCustomization = isDispoStatusEnabled ? page.numberOfAllColumnsWithDispoStatusEnabled : page.numberOfStandardColumns
+        let numnerOfFieldsOnMenuCustomization
 
         menuCustomization().click()
         optionsOnMenuCustomization().click()
+        columnsAvailableOnMenuCustomization()
+            .find('li')
+            .its('length')
+            .then(count => {
+                numnerOfFieldsOnMenuCustomization = count
+                cy.log('Number of li elements:', count)
+            })
+
         pageSizeAndColumnsContianer().within(($list) => {
             enabledColumnsOnMenuCustomization().its('length').then(function (length) {
                 if (length < numnerOfFieldsOnMenuCustomization + 1) {

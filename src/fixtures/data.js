@@ -760,21 +760,6 @@ D.getTagsData = function (type) {
     D.getEditedTagsData(type)
 }
 
-D.getNewTaskTemplateData = function () {
-
-    D.newTaskTemplate = {
-        type: 'Error Correction',
-        subtype: 'Packaging and Labeling',
-        template: 'Error Correction - Packaging and Labeling',
-        title: D.randomNo + '_title',
-        message: D.randomNo + '_message',
-        taskActions: ['Must be Rendered Safe', 'Package Must be Sealed'],
-        dueDateDays: 5
-    }
-
-    return D.newTaskTemplate;
-};
-
 D.getNewTagsData = function (type = 'Org') {
     let randomNo = helper.setNewRandomString(3, 'mmdd');
     D.newTag = {
@@ -812,6 +797,21 @@ D.getEditedTagsData = function (type = 'Org') {
         userGroupNames: [S.selectedEnvironment.readOnly_userGroup.name],
     }
     return D.editedTag;
+};
+
+D.getNewTaskTemplateData = function () {
+
+    D.newTaskTemplate = {
+        type: 'Error Correction',
+        subtype: 'Packaging and Labeling',
+        template: 'Error Correction - Packaging and Labeling',
+        title: D.randomNo + '_title',
+        message: D.randomNo + '_message',
+        taskActions: ['Must be Rendered Safe', 'Package Must be Sealed'],
+        dueDateDays: 5
+    }
+
+    return D.newTaskTemplate;
 };
 
 D.getEditedTaskTemplateData = function (templateId, typeId, subtypeId, taskActionId) {
@@ -1178,8 +1178,7 @@ D.generateNewDataSet = function (setNullForDisabledFields = false, autoDispoOff 
     D.getNewUserData()
 
     D.getNewTaskData()
-    D.getNewTaskTemplateData()
-    D.getEditedTaskTemplateData()
+
     D.newTask = Object.assign(D.newTask, S.selectedEnvironment.taskTemplates.other)
 
     D.getCustomFormData()

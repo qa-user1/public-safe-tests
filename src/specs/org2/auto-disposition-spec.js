@@ -158,7 +158,7 @@ describe('Auto-Disposition', function () {
             );
         });
 
-        it('2.1 Verify "Re-Distribute" for "No Review Date" cases', function () {
+        it('4.1 Verify "Re-Distribute" for "No Review Date" cases', function () {
             ui.menu.open_base_url()
                 .click_Settings__Organization()
                 .click_element_containing_link(C.labels.organization.tabs.autoDisposition);
@@ -242,7 +242,7 @@ describe('Auto-Disposition', function () {
         // enable test just during the full regression as it takes longer to redistribute review dates
         //for all cases with upcoming review date in Org
 
-        xit('A.D.4.2 Verify "Re-Distribute" for "Upcoming" cases', function () {
+        xit('4.2 Verify "Re-Distribute" for "Upcoming" cases', function () {
             api.auth.get_tokens(orgAdmin);
             D.generateNewDataSet()
             api.cases.add_new_case(D.newCase.caseNumber);

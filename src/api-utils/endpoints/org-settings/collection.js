@@ -248,7 +248,6 @@ exports.disable_Case_fields = function (fieldsToEnable) {
 };
 
 exports.enable_all_Item_fields = function (fieldsToDisable, optionalFields) {
-    exports.get_current_org_settings();
     generic_request.POST(
         '/api/organizations/1/fields',
         body.generate_request_payload_for_setting_visible_and_required_Item_fields(fieldsToDisable, optionalFields),

@@ -388,6 +388,7 @@ for (let i = 0; i < 1; i++) {
             ui.taskView
                 .open_newly_created_task_via_direct_link()
                 .select_tab('Items')
+                .enable_all_standard_columns_on_the_grid()
                 .set_page_size(100)
                 .verify_text_is_present_on_main_container('Showing 1 to 100 of 100 items ')
                 .reload_page()
@@ -396,7 +397,6 @@ for (let i = 0; i < 1; i++) {
                 .set___Approve__from_Actions_menu([61, 67])
                 .click__Reject__from_grid_for_specific_item(68, 'Rejected By ThirdTierApprover')
                 .set___Reject__from_Actions_menu([69, 100], 'Rejected By ThirdTierApprover')
-
         });
 
         it('8.', function () {
@@ -629,6 +629,7 @@ for (let i = 0; i < 1; i++) {
                 api.org_settings.update_dispo_config_for_item_catagories()
                 D.generateNewDataSet()
                 let selectedTemplate = S.selectedEnvironment.taskTemplates.dispoAuth;
+                D.getEditedTaskTemplateData()
                 D.newItem.category = 'Accessory' // 1DA item
                 D.newItem.categoryId = 138 // 1DA item
                 D.newTask = Object.assign(D.newTask, selectedTemplate);
@@ -739,4 +740,10 @@ for (let i = 0; i < 1; i++) {
             })
         })
     })
+
 }
+
+
+
+
+

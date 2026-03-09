@@ -29,7 +29,7 @@ describe('Import Item Updates', function () {
     })
     let orgAdmin = S.userAccounts.orgAdmin;
 
-    it.only(' ^^^^^ Preconditions  ^^^^^ ', function () {
+    it(' ^^^^^ Preconditions  ^^^^^ ', function () {
         api.auth.get_tokens(orgAdmin);
         api.users.update_current_user_settings(orgAdmin.id)
         api.org_settings.update_org_settings(true, true)
@@ -47,7 +47,7 @@ describe('Import Item Updates', function () {
         ui.app.pause(15)
     });
 
-    it.only('1. Import updates for all regular and custom fields', function () {
+    it('1. Import updates for all regular and custom fields', function () {
         ui.app.log_title(this);
         let fileName = 'ItemUpdatesImport_allRegularFieldsUpdated-CustomFormAttached';
         api.auth.get_tokens(orgAdmin);

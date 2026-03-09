@@ -114,7 +114,7 @@ for (let i = 0; i < 1; i++) {
             ui.menu.click_Search__Container_AutoDeactivate_Jobs()
                 .verify_text_is_NOT_present_on_main_container('Showing 0 to 0')
             ui.app.verify_content_of_first_row_in_results_table([
-                D.containerA.randomNo + '_BOX_1' + '/' + D.containerA.randomNo + '_Container_A',
+                D.box1.name + '/' + D.containerA.name,
                 'Complete'], true)
         });
 
