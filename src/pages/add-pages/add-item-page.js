@@ -10,6 +10,7 @@ const D = require('../../fixtures/data');
 
 let
     category = e => cy.get('[id="newItemCategorySelect"]'),
+    typeaheadOption = e => cy.get('[ng-repeat="match in matches track by $index"]'),
     caseNumberInput_enabled = e => cy.get('[for="primaryCaseId"]').parent('div').find('input'),
     recoveredByInput = e => cy.contains('Recovered By').parent('div').find('input'),
     recoveryDate = e => cy.get('div[name="recoveryDate"]').find('[min-date="minDate"]'),
@@ -241,9 +242,21 @@ export default class AddItemPage extends BaseAddPage {
         return this;
     };
 
-    enter_storage_location(location) {
-        storageLocationInput().clear().type(location);
-        this.pause(2)
+    enter_Storage_Location(locName, shouldAppearInTypeahead = true) {
+        this.define_API_request_to_be_awaited_with_last_part_of_url('GET', 'search=' + locName, locName)
+        this.clearAndEnterValue(storageLocationInput, locName)
+
+        if (shouldAppearInTypeahead) {
+            this.wait_typeahead_for_search(
+                locName,
+                locName,
+                200,
+                {contains: false} // set true if you want partial match
+            );
+            typeaheadOption().click();
+        } else {
+            this.verify_response_from_API_method(locName, 200, {locations: []}, locName)
+        }
         return this;
     };
 

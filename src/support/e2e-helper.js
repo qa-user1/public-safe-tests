@@ -125,6 +125,7 @@ exports.currentDateAndHour = dateFormat(Date(), 'mmm d, yyyy hh');
 exports.fullDate = dateFormat(Date(), 'dddd, mmmm d, yyyy');
 exports.longDate = dateFormat(Date(), 'mmmm d, yyyy');
 exports.mediumDate = dateFormat(Date(), 'mmm d, yyyy');
+exports.mediumDateWithDots = dateFormat(Date(), 'mmm.d.yyyy');
 exports.shortDate = dateFormat(Date(), 'm/d/yy');
 
 

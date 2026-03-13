@@ -66,7 +66,6 @@ for (let i = 0; i < 1; i++) {
             api.auth.get_tokens(orgAdmin);
             D.generateNewDataSet()
             api.items.add_new_item()
-            cy.wait(2000)
             api.transactions.check_out_item()
             ui.menu.click_Search__Item()
             ui.searchItem.search_with_minimum_required_fields_and_click_Actions_on_Search_Results
@@ -99,7 +98,6 @@ for (let i = 0; i < 1; i++) {
             api.auth.get_tokens(orgAdmin);
             D.generateNewDataSet()
             api.items.add_new_item()
-            cy.wait(2000)
             api.transactions.check_out_item()
             ui.menu.click_Search__Item()
             ui.searchItem.search_with_minimum_required_fields_and_click_Actions_on_Search_Results
@@ -161,7 +159,6 @@ for (let i = 0; i < 1; i++) {
             api.auth.get_tokens(orgAdmin);
             D.generateNewDataSet()
             api.items.add_new_item()
-            cy.wait(2000)
             api.transactions.dispose_item()
             ui.menu.click_Search__Item()
             ui.searchItem.search_with_minimum_required_fields_and_click_Actions_on_Search_Results

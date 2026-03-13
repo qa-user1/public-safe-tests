@@ -29,6 +29,7 @@ exports.getTestAccounts = function (environment, orgNum = 1) {
             id: environment.users.orgAdmin.id,
             guid: environment.users.orgAdmin.guid,
             orgAndOfficeName: environment.users.orgAdmin.orgAndOfficeName,
+            staticToken: environment.users.orgAdmin.staticToken,
         },
         powerUser: {
             title: exports.userRoles.powerUser,

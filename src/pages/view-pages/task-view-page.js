@@ -409,6 +409,11 @@ export default class TaskViewPage extends BaseViewPage {
         return this;
     };
 
+    click_Save_() {
+        cy.get('[ng-click="saveTask()"]').click()
+        return this;
+    };
+
     verify_Disposition_Statuses_on_the_grid(arrayOfArrays_rowNumberAndStatusInEach) {
         this.wait_until_spinner_disappears()
         arrayOfArrays_rowNumberAndStatusInEach.forEach(array => {

@@ -41,7 +41,7 @@ exports.generate_POST_request_payload_for_Disposal = function (newItem) {
         transaction: {
             disposedByName: S.userAccounts.orgAdmin.name,
             disposedById: S.userAccounts.orgAdmin.id,
-            witnessId: S.userAccounts.powerUser.id,
+            witnessId: S.userAccounts.orgAdmin.id.id,
             methodId: S.selectedEnvironment.disposalMethod.id,
             notes: D.randomNo,
             itemIds: [newItem.id],

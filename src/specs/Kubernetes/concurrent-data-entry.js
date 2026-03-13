@@ -9,26 +9,23 @@ describe('Services', function () {
 
     before(function () {
         api.auth.get_tokens_without_page_load(orgAdmin);
-        D.getCaseDataWithReducedFields()
+        D.getNewCaseData()
         D.getItemDataWithReducedFields()
-        api.org_settings.disable_Case_fields()
+        api.org_settings.enable_all_Case_fields()
         api.org_settings.disable_Item_fields()
+        api.org_settings.set_Org_Level_Case_Number_formatting(false, false, true)
     });
 
-    it('Concurrent Case Entries with AutoAssigned Case Number', function () {
-        api.auth.get_tokens_without_page_load(powerUser);
-
-        let currentLocName, currentParentLocName, newParentLocNameOrId
-
+    it.only('Concurrent Case Entries with AutoAssigned Case Number', function () {
+        api.auth.get_tokens_without_page_load(orgAdmin);
         cy.getLocalStorage('headers').then(headers => {
             numberOfRequests = 3
             let numberOfCases = 300
 
-            currentLocName = 'aaa'
-            currentParentLocName = 'aaaa-office1-newloc1'
-            api.locations.fetch_location_IDs(currentLocName, currentParentLocName, newParentLocNameOrId)
+            D.newCase.offenseDescription = '#21030 ⁃ [Code and Script]'
+
             for (let j = 0; j < numberOfCases; j++) {
-                api.cases.add_new_case(D.newCase.caseNumber, D.newCase, "newCase" + i, true)
+                api.cases.add_new_case(D.newCase.caseNumber, D.newCase, "newCase" + j, true)
             }
         });
     });

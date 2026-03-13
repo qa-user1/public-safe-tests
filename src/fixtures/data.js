@@ -24,48 +24,70 @@ D.getCurrentDateAndRandomNumber = function (randomNumberLenght) {
 }
 
 D.getStorageLocationData = function (locationName, parentId = 0, canStore = true, isActive = true, isContainer = false, specificRandomNo) {
-    let randomNo =  specificRandomNo || helper.mediumDate + '_' + helper.getRandomNo(4)
+    let randomNo =  specificRandomNo || helper.mediumDateWithDots + '_' + helper.getRandomNo(4)
     D[locationName] = {
-        "name": randomNo + '_' + locationName,
+        "name": locationName + '_' + randomNo,
         "randomNo": randomNo,
         "active": isActive,
         "parentId": parentId,
         "canStoreHere": canStore,
-        "isContainer": isContainer
+        "isContainer": isContainer,
+        "legacyBarcode": 'L' + randomNo + '_' + locationName,
+        "groups": null,
+        "items": 0,
     }
+    D.newStorageLocation = Object.assign({}, D[locationName])
     return D[locationName]
 }
 
-D.getStorageLocationData_forLocCRUD_Only = function () {
-    let randomNo = helper.setNewRandomString();
-
-    D.newStorageLocation = {
-        name: '0-New-L' + ' ' + randomNo,
-        items: 0,
-        isActive: true,
-        legacyBarcode: '',
-        parentLocationBarcode: '',
-        isContainer: false,
-        isStorage: true,
-        groups: '',
+D.getEditedStorageLocationData = function (locationName, parentId = 0, canStore = false, isActive = false, isContainer = true, specificRandomNo) {
+    let randomNo =  specificRandomNo || helper.mediumDateWithDots + '_' + helper.getRandomNo(4)
+    D[locationName] = {
+        "name": locationName + '_' + randomNo,
+        "randomNo": randomNo,
+        "active": isActive,
+        "parentId": parentId,
+        "canStoreHere": canStore,
+        "isContainer": isContainer,
+        "parentLocName": null,
+        "legacyBarcode": 'L' + randomNo + '_' + locationName,
+        "groups": [S.selectedEnvironment.regularUser_permissionGroup.name],
+        "items": 0,
     }
+    D.editedStorageLocation = Object.assign({}, D[locationName])
+    return D[locationName]
+}
 
-    D.editedStorageLocation = {
-        name: '0-edited' + ' ' + randomNo,
-        items: 0,
-        isActive: false,
-        legacyBarcode: 'new barcode' + ' ' + randomNo,
-        parentLocationBarcode: '',
-        isContainer: true,
-        isStorage: false,
-        groups: 'Power User',
-        parentMoveLocation: '0 - automation - do not touch',
-        parentStorageLocation: '0 - P - don\'t touch',
-        newContainerName: 'New C' + ' ' + randomNo,
-        moveNote: "note" + ' ' + randomNo
-    }
-    return newStorageLocation;
-};
+// D.getStorageLocationData_forLocCRUD_Only = function (name) {
+//     let randomNo = helper.setNewRandomString();
+//
+//     D.newStorageLocation = {
+//         name: name,
+//         items: 0,
+//         isActive: true,
+//         legacyBarcode: '',
+//         parentLocationBarcode: '',
+//         isContainer: false,
+//         isStorage: true,
+//         groups: '',
+//     }
+//
+//     D.editedStorageLocation = {
+//         name: 'edited-' + name,
+//         items: 0,
+//         isActive: false,
+//         legacyBarcode: 'new barcode' + ' ' + randomNo,
+//         parentLocationBarcode: '',
+//         isContainer: true,
+//         isStorage: false,
+//         groups: 'Power User',
+//         parentMoveLocation: `---- test`,
+//         parentStorageLocation:`---- test`,
+//         newContainerName: 'New C' + ' ' + randomNo,
+//         moveNote: "note" + ' ' + randomNo
+//     }
+//     return newStorageLocation;
+// };
 
 D.getNewCaseData = function (caseNumber, autoDispoOff = false) {
     // api.cases.get_most_recent_case();
@@ -738,21 +760,6 @@ D.getTagsData = function (type) {
     D.getEditedTagsData(type)
 }
 
-D.getNewTaskTemplateData = function () {
-
-    D.newTaskTemplate = {
-        type: 'Error Correction',
-        subtype: 'Packaging and Labeling',
-        template: 'Error Correction - Packaging and Labeling',
-        title: D.randomNo + '_title',
-        message: D.randomNo + '_message',
-        taskActions: ['Must be Rendered Safe', 'Package Must be Sealed'],
-        dueDateDays: 5
-    }
-
-    return D.newTaskTemplate;
-};
-
 D.getNewTagsData = function (type = 'Org') {
     let randomNo = helper.setNewRandomString(3, 'mmdd');
     D.newTag = {
@@ -792,6 +799,21 @@ D.getEditedTagsData = function (type = 'Org') {
     return D.editedTag;
 };
 
+D.getNewTaskTemplateData = function () {
+
+    D.newTaskTemplate = {
+        type: 'Error Correction',
+        subtype: 'Packaging and Labeling',
+        template: 'Error Correction - Packaging and Labeling',
+        title: D.randomNo + '_title',
+        message: D.randomNo + '_message',
+        taskActions: ['Must be Rendered Safe', 'Package Must be Sealed'],
+        dueDateDays: 5
+    }
+
+    return D.newTaskTemplate;
+};
+
 D.getEditedTaskTemplateData = function (templateId, typeId, subtypeId, taskActionId) {
     templateId = templateId || S.selectedEnvironment.taskTemplates.errorCorrection.templateId
     typeId = typeId || S.selectedEnvironment.taskTemplates.errorCorrection.typeId
@@ -811,6 +833,7 @@ D.getEditedTaskTemplateData = function (templateId, typeId, subtypeId, taskActio
         taskActions: ['Must be Rendered Safe'],
         dueDateDays: 5,
         isDispositionActionAllowed: false,
+        isAssignedToRequired: false,
         isActionAllowedForType: true,
         tasActionsProperties: [{
             id: taskActionId,
@@ -1139,7 +1162,7 @@ D.generateNewDataSet = function (setNullForDisabledFields = false, autoDispoOff 
     D.setNewRandomNo();
     S.getCurrentDate();
     // api.cases.get_most_recent_case();
-    api.cases.get_old_case_data(S.selectedEnvironment.oldClosedCase.id);
+    //api.cases.get_old_case_data(S.selectedEnvironment.oldClosedCase.id);
 
     //  D.getCustomFormData()
 
@@ -1155,6 +1178,7 @@ D.generateNewDataSet = function (setNullForDisabledFields = false, autoDispoOff 
     D.getNewUserData()
 
     D.getNewTaskData()
+
     D.newTask = Object.assign(D.newTask, S.selectedEnvironment.taskTemplates.other)
 
     D.getCustomFormData()

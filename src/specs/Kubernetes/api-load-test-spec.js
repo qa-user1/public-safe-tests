@@ -21,7 +21,7 @@ describe('Services', function () {
         // api.items.add_new_item()
     });
 
-    it.only('REPORT Service', function () {
+    it('REPORT Service', function () {
         api.auth.get_tokens_without_page_load(orgAdmin);
 
         function checkStatusOfJobs(nameOfReportsInCache, secondsToWait = 30) {
@@ -46,37 +46,37 @@ describe('Services', function () {
             });
         }
 
-       // start report for case with cca 1k items
-         generic_request.POST(
-             '/api/reports/buildreport',
-             requestPayloads.reporterPayloadFromCaseView([S.selectedEnvironment.oldActiveCase.id]),
-             "REPORT Service",
-             'Big_Case_Report'
-         )
+        // start report for case with cca 1k items
+        generic_request.POST(
+            '/api/reports/buildreport',
+            requestPayloads.reporterPayloadFromCaseView([S.selectedEnvironment.oldActiveCase.id]),
+            "REPORT Service",
+            'Big_Case_Report'
+        )
 
-       // start report for case with cca 1k items
-         generic_request.POST(
-             '/api/reports/buildreport',
-             requestPayloads.reporterPayloadFromCaseView([S.selectedEnvironment.oldActiveCase.id]),
-             "REPORT Service",
-             'Big_Case_Report'
-         )
+        // start report for case with cca 1k items
+        generic_request.POST(
+            '/api/reports/buildreport',
+            requestPayloads.reporterPayloadFromCaseView([S.selectedEnvironment.oldActiveCase.id]),
+            "REPORT Service",
+            'Big_Case_Report'
+        )
 
-       // start report for case with cca 1k items
-         generic_request.POST(
-             '/api/reports/buildreport',
-             requestPayloads.reporterPayloadFromCaseView([S.selectedEnvironment.oldActiveCase.id]),
-             "REPORT Service",
-             'Big_Case_Report'
-         )
+        // start report for case with cca 1k items
+        generic_request.POST(
+            '/api/reports/buildreport',
+            requestPayloads.reporterPayloadFromCaseView([S.selectedEnvironment.oldActiveCase.id]),
+            "REPORT Service",
+            'Big_Case_Report'
+        )
 
-       // start report for case with cca 1k items
-         generic_request.POST(
-             '/api/reports/buildreport',
-             requestPayloads.reporterPayloadFromCaseView([S.selectedEnvironment.oldActiveCase.id]),
-             "REPORT Service",
-             'Big_Case_Report'
-         )
+        // start report for case with cca 1k items
+        generic_request.POST(
+            '/api/reports/buildreport',
+            requestPayloads.reporterPayloadFromCaseView([S.selectedEnvironment.oldActiveCase.id]),
+            "REPORT Service",
+            'Big_Case_Report'
+        )
 
         // //  start X big reports
         // for (let i = 0; i < numberOfRequests; i++) {
@@ -1315,7 +1315,7 @@ describe('Services', function () {
         cy.getLocalStorage('headers').then(headers => {
 
             let updatedHeaders = JSON.parse(headers);
-         //   updatedHeaders.officeid = office2.id
+            //   updatedHeaders.officeid = office2.id
             cy.setLocalStorage('headers', JSON.stringify(updatedHeaders))
 
             function fetch_location_IDs(currentLocName, currentParentLocName, newParentLocNameOrId) {
@@ -1332,16 +1332,16 @@ describe('Services', function () {
             numberOfRequests = 50
             let numberOfItemsInBigLocs = 100
 
-         //   add X number of items to specific locations on root level
+            //   add X number of items to specific locations on root level
             currentParentLocName = null
-              for (let i = 1; i < (numberOfRequests+1); i++) {
-                  currentParentLocName = '__AAA_Loc1'
-                  currentLocName = '____CONT_' + i
-                  fetch_location_IDs(currentLocName, currentParentLocName, newParentLocNameOrId)
-                  for (let j = 0; j < numberOfItemsInBigLocs; j++) {
-                      api.items.add_new_item(true, currentLocName)
-                  }
-              }
+            for (let i = 1; i < (numberOfRequests + 1); i++) {
+                currentParentLocName = '__AAA_Loc1'
+                currentLocName = '____CONT_' + i
+                fetch_location_IDs(currentLocName, currentParentLocName, newParentLocNameOrId)
+                for (let j = 0; j < numberOfItemsInBigLocs; j++) {
+                    api.items.add_new_item(true, currentLocName)
+                }
+            }
 
             // MOVE X locations
             for (let i = 1; i < numberOfRequests; i++) {
@@ -1362,12 +1362,12 @@ describe('Services', function () {
                 // api.locations.move_location_with_request_from_scan_page(currentLocName, newParentLocNameOrId, destinationOffice, orgAdmin)
 
                 //// -------- moving locations to specific parent location in office_2---> with Locations Move endpoint - POST request
-                 //  newParentLocNameOrId = 542708 // Containers in Dev Org#3- Office2
-                 //    newParentLocNameOrId = 1166445 // ___NEW_OFF_2 in Pentest Org#3- Office2
-                 //    currentParentLocName = '___AAAA'
-                 //    destinationOffice = office2
-                 //    fetch_location_IDs(currentLocName, currentParentLocName, newParentLocNameOrId)
-                 //    api.locations.move_location_with_request_from_scan_page(currentLocName, newParentLocNameOrId, destinationOffice, orgAdmin)
+                //  newParentLocNameOrId = 542708 // Containers in Dev Org#3- Office2
+                //    newParentLocNameOrId = 1166445 // ___NEW_OFF_2 in Pentest Org#3- Office2
+                //    currentParentLocName = '___AAAA'
+                //    destinationOffice = office2
+                //    fetch_location_IDs(currentLocName, currentParentLocName, newParentLocNameOrId)
+                //    api.locations.move_location_with_request_from_scan_page(currentLocName, newParentLocNameOrId, destinationOffice, orgAdmin)
                 //
                 //
                 // cy.getLocalStorage('apiResponse').then(apiResponse => {
@@ -1562,22 +1562,87 @@ describe('Services', function () {
         }
     });
 
-    it('Disposal transactions (start this test after starting some action that causes a CPU spike and heavy load on SQL Server,' +
-        'e.g. moving 100+ locations)', function () {
-        api.auth.get_tokens_without_page_load(orgAdmin);
-        for (let i = 0; i < 10; i++) {
-            api.items.add_new_item(true, null, 'newItem' + i)
-            cy.log('Adding new item __' + (i + 1))
+    for (let i = 0; i < 1000; i++) {
+        it.only('Disposal transactions (start this test after starting some action that causes a CPU spike and heavy load on SQL Server,' +
+            'e.g. moving 100+ locations)', function () {
 
-            api.transactions.dispose_item('newItem' + i)
-            cy.log('Item Disposed __' + (i + 1))
-        }
+            // ORG: "Biggest Disposal Count'
+            if (Cypress.env('testSuite') === 1){
+                orgAdmin.email = 'qa+smj-api@trackerproducts.com'
+                orgAdmin.id = 147742
+                S.userAccounts.orgAdmin.id = 147742
+            }
 
-        // for (let i = 0; i < 10; i++) {
-        //     api.transactions.dispose_item('newItem' + i)
-        //     cy.log('Item Disposed __' + (i + 1))
-        // }
-    })
+            if (Cypress.env('testSuite') === 2){
+                orgAdmin.email = 'qa+smj-api2@trackerproducts.com'
+                orgAdmin.id =S.userAccounts.orgAdmin.id = 147743
+            }
+
+            if (Cypress.env('testSuite') === 3){
+                orgAdmin.email = 'qa+smj-api3@trackerproducts.com'
+                orgAdmin.id =S.userAccounts.orgAdmin.id = 147744
+            }
+
+            if (Cypress.env('testSuite') === 4){
+                orgAdmin.email = 'qa+smj-api4@trackerproducts.com'
+                orgAdmin.id =S.userAccounts.orgAdmin.id = 147745
+            }
+
+            if (Cypress.env('testSuite') === 5){
+                orgAdmin.email = 'qa+smj-api5@trackerproducts.com'
+                orgAdmin.id =S.userAccounts.orgAdmin.id = 147746
+            }
+
+            if (Cypress.env('testSuite') === 6){
+                orgAdmin.email = 'qa+smj-api6@trackerproducts.com'
+                orgAdmin.id =S.userAccounts.orgAdmin.id = 147747
+            }
+
+            if (Cypress.env('testSuite') === 7){
+                orgAdmin.email = 'qa+smj-api7@trackerproducts.com'
+                orgAdmin.id =S.userAccounts.orgAdmin.id = 147748
+            }
+
+            if (Cypress.env('testSuite') === 8){
+                orgAdmin.email = 'qa+smj-api8@trackerproducts.com'
+                orgAdmin.id =S.userAccounts.orgAdmin.id = 147749
+            }
+
+            if (Cypress.env('testSuite') === 9){
+                orgAdmin.email = 'qa+smj-api9@trackerproducts.com'
+                orgAdmin.id =S.userAccounts.orgAdmin.id = 147750
+            }
+
+            if (Cypress.env('testSuite') === 10){
+                orgAdmin.email = 'qa+smj-api10@trackerproducts.com'
+                orgAdmin.id =S.userAccounts.orgAdmin.id = 147751
+            }
+
+
+            orgAdmin.officeId = 932
+            orgAdmin.organizationId = 517
+            let loc = {id: 619297}
+
+            api.auth.get_tokens_without_page_load(orgAdmin);
+            D.getCaseDataWithReducedFields()
+            D.getItemDataWithReducedFields()
+            D.newCase.caseOfficerIds = [orgAdmin.id]
+            api.cases.add_new_case()
+
+            for (let i = 0; i < 10; i++) {
+                api.items.add_new_item(true, loc, 'newItem' + i)
+                cy.log('Adding new item __' + (i + 1))
+
+                // api.transactions.dispose_item('newItem' + i)
+                // cy.log('Item Disposed __' + (i + 1))
+            }
+
+            for (let i = 0; i < 10; i++) {
+                api.transactions.dispose_item('newItem' + i)
+                cy.log('Item Disposed __' + (i + 1))
+            }
+        })
+    }
 
 
 });

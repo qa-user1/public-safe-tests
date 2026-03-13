@@ -70,9 +70,9 @@ export default class UserAdminPage extends BasePage {
     search_for_user(email, numberOfUsersExpected = 1, isActive = true) {
         this.wait_until_spinner_disappears();
         this.define_API_request_to_be_awaited('POST', '/api/users/search', 'searchUsers')
-        this.pause(3)
+        this.pause(2)
         this.enterValue(searchInput, email)
-        this.pause(3)
+        this.pause(2)
         this.press_ENTER(searchInput)
 
         this.wait_response_from_API_call('searchUsers')
@@ -188,7 +188,7 @@ export default class UserAdminPage extends BasePage {
 
     select_permission_group_per_office(permissionGroup, officeName) {
         this.wait_until_label_appears('Permissions Matrix')
-        cy.pause(2)
+        this.pause(2)
         this.click_table_matrix_cell_based_on_column_name_and_unique_value_in_the_row(permissionGroup, officeName, 1)
         return this;
     };

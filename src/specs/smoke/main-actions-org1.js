@@ -14,11 +14,12 @@ let powerUser = S.getUserData(S.userAccounts.powerUser);
 for (let i = 0; i < 1; i++) {
 
     it(' ^^^^^ Preconditions  ^^^^^ ', function () {
-        api.auth.get_tokens(orgAdmin);
+        api.auth.set_static_token_for_all_API_requests(orgAdmin);
         api.org_settings.enable_all_Case_fields()
             .enable_all_Item_fields()
             .enable_all_Person_fields()
-            .update_org_settings(false, true)
+         api.auth.get_tokens(orgAdmin);
+        api.org_settings.update_org_settings(false, true)
             .set_Org_Level_Case_Number_formatting(false, false, false, null)
         api.users.update_current_user_settings(orgAdmin.id, DF.dateTimeFormats.short, DF.dateFormats.shortDate)
     });
@@ -508,10 +509,10 @@ for (let i = 0; i < 1; i++) {
             D.generateNewDataSet()
             api.org_settings.get_container_settings()
                 .update_org_settings_by_specifying_properties({
-                'useContainers': true,
-                'useContainerAutoNumbering': true,
-                'useCaseLevelContainerAutoNumbering': false
-            })
+                    'useContainers': true,
+                    'useContainerAutoNumbering': true,
+                    'useCaseLevelContainerAutoNumbering': false
+                })
             api.cases.add_new_case()
             api.items.add_new_item(true)
             D.parent1 = D.getStorageLocationData('PARENT_1', null, true, true, true)
@@ -542,7 +543,5 @@ for (let i = 0; i < 1; i++) {
                     ])
             });
         });
-
     });
-
 }

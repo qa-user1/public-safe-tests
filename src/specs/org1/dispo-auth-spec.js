@@ -67,26 +67,36 @@ for (let i = 0; i < 1; i++) {
 
         before(() => {
             cy.session('app-session', () => {
-                api.auth.get_tokens_without_page_load(orgAdmin);
+                api.auth.get_tokens_without_page_load(orgAdmin)
                 D.generateNewDataSet()
             })
         })
 
         beforeEach(function () {
-            Object.keys(persisted).forEach(k => {
-                localStorage.setItem(k, persisted[k])
-            })
-            if (hasFailed) {
+            // restore storage
+            Object.keys(persisted).forEach(k => localStorage.setItem(k, persisted[k]))
+
+            const isRetryAttempt = this.currentTest && this.currentTest.currentRetry() > 0
+
+            // If we are retrying the *current* test, don't skip it
+            if (hasFailed && !isRetryAttempt) {
                 this.skip()
             }
         })
 
         afterEach(function () {
+            // persist storage
             persisted = {}
             Object.keys(localStorage).forEach(k => {
                 persisted[k] = localStorage.getItem(k)
             })
-            if (this.currentTest && this.currentTest.state === 'failed') {
+
+            // Mark suite as failed only after the *final* attempt fails
+            const t = this.currentTest
+            if (!t) return
+
+            const isLastAttempt = t.currentRetry() >= (t.retries() || 0)
+            if (t.state === 'failed' && isLastAttempt) {
                 hasFailed = true
             }
         })
@@ -201,32 +211,42 @@ for (let i = 0; i < 1; i++) {
         })
     })
 
-    xdescribe('Add Dispo Task with 100 items and assign to Power User, ' + '--initiate and complete 2nd and 3rd tier approval' + '--use Approve and Reject buttons from grid and Actions menu' + '--with and without Dispo Auth Service' + '--check statuses and notes upon rejections and approvals', function () {
+    describe('Add Dispo Task with 100 items and assign to Power User, ' + '--initiate and complete 2nd and 3rd tier approval' + '--use Approve and Reject buttons from grid and Actions menu' + '--with and without Dispo Auth Service' + '--check statuses and notes upon rejections and approvals', function () {
         let hasFailed = false
         let persisted = {}
 
         before(() => {
             cy.session('app-session', () => {
-                api.auth.get_tokens_without_page_load(orgAdmin);
+                api.auth.get_tokens_without_page_load(orgAdmin)
                 D.generateNewDataSet()
             })
         })
 
         beforeEach(function () {
-            Object.keys(persisted).forEach(k => {
-                localStorage.setItem(k, persisted[k])
-            })
-            if (hasFailed) {
+            // restore storage
+            Object.keys(persisted).forEach(k => localStorage.setItem(k, persisted[k]))
+
+            const isRetryAttempt = this.currentTest && this.currentTest.currentRetry() > 0
+
+            // If we are retrying the *current* test, don't skip it
+            if (hasFailed && !isRetryAttempt) {
                 this.skip()
             }
         })
 
         afterEach(function () {
+            // persist storage
             persisted = {}
             Object.keys(localStorage).forEach(k => {
                 persisted[k] = localStorage.getItem(k)
             })
-            if (this.currentTest && this.currentTest.state === 'failed') {
+
+            // Mark suite as failed only after the *final* attempt fails
+            const t = this.currentTest
+            if (!t) return
+
+            const isLastAttempt = t.currentRetry() >= (t.retries() || 0)
+            if (t.state === 'failed' && isLastAttempt) {
                 hasFailed = true
             }
         })
@@ -368,6 +388,7 @@ for (let i = 0; i < 1; i++) {
             ui.taskView
                 .open_newly_created_task_via_direct_link()
                 .select_tab('Items')
+                .enable_all_standard_columns_on_the_grid()
                 .set_page_size(100)
                 .verify_text_is_present_on_main_container('Showing 1 to 100 of 100 items ')
                 .reload_page()
@@ -376,7 +397,6 @@ for (let i = 0; i < 1; i++) {
                 .set___Approve__from_Actions_menu([61, 67])
                 .click__Reject__from_grid_for_specific_item(68, 'Rejected By ThirdTierApprover')
                 .set___Reject__from_Actions_menu([69, 100], 'Rejected By ThirdTierApprover')
-
         });
 
         it('8.', function () {
@@ -416,32 +436,43 @@ for (let i = 0; i < 1; i++) {
         });
     });
 
-    describe('Resetting Dispo fields when item is added to a new Dispo task', function () {
+    describe('Rules for auto-excluding items, resetting item status and clearing Dispo fields', function () {
+
         let hasFailed = false
         let persisted = {}
 
         before(() => {
             cy.session('app-session', () => {
-                api.auth.get_tokens_without_page_load(orgAdmin);
+                api.auth.get_tokens_without_page_load(orgAdmin)
                 D.generateNewDataSet()
             })
         })
 
         beforeEach(function () {
-            Object.keys(persisted).forEach(k => {
-                localStorage.setItem(k, persisted[k])
-            })
-            if (hasFailed) {
+            // restore storage
+            Object.keys(persisted).forEach(k => localStorage.setItem(k, persisted[k]))
+
+            const isRetryAttempt = this.currentTest && this.currentTest.currentRetry() > 0
+
+            // If we are retrying the *current* test, don't skip it
+            if (hasFailed && !isRetryAttempt) {
                 this.skip()
             }
         })
 
         afterEach(function () {
+            // persist storage
             persisted = {}
             Object.keys(localStorage).forEach(k => {
                 persisted[k] = localStorage.getItem(k)
             })
-            if (this.currentTest && this.currentTest.state === 'failed') {
+
+            // Mark suite as failed only after the *final* attempt fails
+            const t = this.currentTest
+            if (!t) return
+
+            const isLastAttempt = t.currentRetry() >= (t.retries() || 0)
+            if (t.state === 'failed' && isLastAttempt) {
                 hasFailed = true
             }
         })
@@ -477,6 +508,7 @@ for (let i = 0; i < 1; i++) {
                     .click_button('Create')
                 ui.addTask.select_template('Disposition Authorization')
                     .verify_text_is_present_on_main_container("Items described below cannot be added to the Disposition Authorization task so the system will auto-exclude them upon saving: ----> Items that are currently linked to another active Disposition Authorization task")
+                    .select_assignees([orgAdmin.lastName])
                     .click_Save_()
                     .verify_toast_message(C.toastMsgs.saved)
                     .verify_content_of_first_row_in_results_table('There aren\'t any linked objects')
@@ -517,7 +549,8 @@ for (let i = 0; i < 1; i++) {
 
                 // check Item Dispose action IS available for the user WITH Override Disposal/Release Authorization
                 api.org_settings.set_override_disposal_release_authorization([orgAdmin.id], [S.selectedEnvironment.admin_userGroup.id])
-                ui.taskView.reload_page()
+                ui.taskView.pause(2)
+                    .reload_page()
                     .select_tab('Items')
                     .select_checkbox_on_first_table_row_on_active_tab()
                     .click_Actions()
@@ -544,6 +577,7 @@ for (let i = 0; i < 1; i++) {
                     .verify_text_is_present_on_main_container([
                         "Items described below cannot be added to the Disposition Authorization task so the system will auto-exclude them upon saving:",
                         "----> Items in 'Disposed' Status"])
+                    .select_assignees([orgAdmin.name])
                     .click_Save_()
                     .verify_toast_message(C.toastMsgs.saved)
                     .verify_content_of_first_row_in_results_table('There aren\'t any linked objects')
@@ -595,6 +629,7 @@ for (let i = 0; i < 1; i++) {
                 api.org_settings.update_dispo_config_for_item_catagories()
                 D.generateNewDataSet()
                 let selectedTemplate = S.selectedEnvironment.taskTemplates.dispoAuth;
+                D.getEditedTaskTemplateData()
                 D.newItem.category = 'Accessory' // 1DA item
                 D.newItem.categoryId = 138 // 1DA item
                 D.newTask = Object.assign(D.newTask, selectedTemplate);
@@ -635,10 +670,9 @@ for (let i = 0; i < 1; i++) {
                     .verify_specific_columns_are_blank_in_specific_rows('Release After Date', 4)
                     .verify_specific_columns_are_blank_in_specific_rows('Dispose After Date', 4)
                     .verify_specific_column_contains_specific_value_in_specific_rows('Claimant', D.newPerson.firstName, [3, 4])
-
             })
 
-            it('Submit for Disposition and get final Dispo Status for 5 items (all statuses nad fields populated', function () {
+            it('Submit for Disposition and get final Dispo Status for 5 items (all statuses and fields populated)', function () {
                 api.items.get_items_from_specific_case(D.newCase.caseNumber)
                 api.tasks.add_new_task(D.newTask, 5)
                     .fetch_new_task_data()
@@ -680,13 +714,36 @@ for (let i = 0; i < 1; i++) {
                     .verify_specific_columns_are_blank_in_specific_rows('Release After Date', 4)
                     .verify_specific_columns_are_blank_in_specific_rows('Dispose After Date', 4)
                     .verify_specific_column_contains_specific_value_in_specific_rows('Claimant', D.newPerson.firstName, [3, 4])
-
             })
 
-//TODO ---> make this test similar as scenario above
             it('Rule 2.3 -----> Reset status from "Under Review" to "Unreviewed" and clearing fields when task template is changed from "Disposition Auth" to any other ', function () {
-
+                ui.menu.open_base_url()
+                    .click_Tasks()
+                    .click_button('Details')
+                    .click_button('Edit Task')
+                ui.taskView.select_dropdown_option('Task Template', D.editedTaskTemplate.template)
+                    .verify_messages_on_sweet_alert(['Please note that all disposition-related fields will be reset for items in \'Under Review\' status after this action, except the Claimant field.'])
+                    .click_button_on_sweet_alert('Yes')
+                    .click_Save_()
+                    .verify_toast_message('Saved')
+                    .reload_page()
+                    .verify_text_is_present_on_main_container(D.editedTaskTemplate.type)
+                    .select_tab(C.tabs.items)
+                    .enable_all_standard_columns_on_the_grid(C.pages.taskViewItemsTab, true)
+                    .verify_specific_column_has_specific_value_in_all_rows('Disposition Status', 'Unreviewed')
+                    .verify_specific_columns_are_blank_in_all_rows('Disposition Authorization Action')
+                    .verify_specific_columns_are_blank_in_specific_rows('Hold Reason', 2)
+                    .verify_specific_columns_are_blank_in_specific_rows('Hold Until Date', 2)
+                    .verify_specific_columns_are_blank_in_specific_rows('Release After Date', 4)
+                    .verify_specific_columns_are_blank_in_specific_rows('Dispose After Date', 4)
+                    .verify_specific_column_contains_specific_value_in_specific_rows('Claimant', D.newPerson.firstName, [3, 4])
             })
         })
     })
+
 }
+
+
+
+
+

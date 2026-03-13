@@ -42,7 +42,7 @@ exports.add_new_item = function (toNewCase = true, locationObjectOrName = null, 
 
                 generic_request.POST(
                     '/api/items',
-                    body.generate_POST_request_payload_for_creating_new_item(itemObject, caseObject, locationObject, newPerson),
+                    body.generate_POST_request_payload_for_creating_new_item(itemObject, caseObject, specificLocation, newPerson),
                     "New ITEM created via API with ID_______",
                     propertyToSave,
                 )

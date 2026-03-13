@@ -1027,12 +1027,12 @@ describe('Cases Search', function () {
 
     it('11.7 CLOSED DATE --  between X and Y', function () {
         let caseNo = S.selectedEnvironment.oldClosedCase.caseNumber;
-         let date1 = helper.getCurrentDateInSpecificFormat('yyyy-mm-dd')
-        //let date1 = '2025-06-16';
+        // let date1 = helper.getCurrentDateInSpecificFormat('yyyy-mm-dd')
+        let date1 = '2025-06-16';
 
-        let date2 = S.selectedEnvironment.oldClosedCase.closedDate;
+        let date2 = S.selectedEnvironment.oldClosedCase.closedDate2;
         let numberOfDaysSinceClosedDate = helper.getNumberOfDaysBetween2Dates(date1, date2)
-        let olderThan_days = numberOfDaysSinceClosedDate -1
+        let olderThan_days = numberOfDaysSinceClosedDate - 1
         let newerThan_days = numberOfDaysSinceClosedDate + 1
 
         api.auth.get_tokens(orgAdmin);
@@ -1183,7 +1183,7 @@ describe('Cases Search', function () {
         ui.menu.click_Search__Case();
         ui.searchCase
             .enter_Case_Number(equals, caseNo)
-            .enter_Review_Date(olderThanX, numberOfDaysSinceReviewDate -1)
+            .enter_Review_Date(olderThanX, numberOfDaysSinceReviewDate - 1)
             .click_Search()
             .verify_text_is_present_on_main_container(caseNo)
     });

@@ -777,6 +777,25 @@ exports.generate_request_payload_for_setting_dispo_config_for_item_categories = 
 
     let body = [
         {
+            "categoryName": "Accessory",
+            "approvalUsers": [],
+            "approvalUserGroups": [],
+            "overrideDispositionAuthorizationUsers": [],
+            "overrideDispositionAuthorizationUserGroups": [],
+            "maxHoldDays": 555,
+            "maxIndefiniteRetentionDays": 180,
+            "categoryId": 138,
+            "isSecondaryApprovalRequired": false,
+            "isTertiaryApprovalRequired": false,
+            "isAutoHold": false,
+            "isApprovalforItemReleaseBlocked": false,
+            "overrideDispositionAuthorization": false,
+            "maxHoldDaysApplytoAll": false,
+            "maxIndefiniteRetentionDaysApplyToAll": false,
+            "usersAndGroups": {"items": []},
+            "overrideDispositionUsersAndGroups": {"items": []}
+        },
+        {
             "categoryName": "Alcohol",
             "approvalUsers": [],
             "approvalUserGroups": [],

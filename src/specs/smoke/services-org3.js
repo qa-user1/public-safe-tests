@@ -143,16 +143,17 @@ for (let i = 0; i < 1; i++) {
 
         });
 
-        it('3. Importer', function () {
-            let fileName = 'CaseImport_allFields_' + S.domain;
+        it.only('3. Importer', function () {
+            const retryNumber = Cypress.currentRetry;
+            let fileName = 'CaseImport_allFields_' + retryNumber + '_' + S.domain;
             api.auth.get_tokens(S.userAccounts.orgAdmin);
-            ui.app.remove_excel_file_if_exists(fileName);
-            D.generateNewDataSet();
-            D.getNewItemData(D.newCase);
-            D.newCase.caseOfficers_importFormat = S.userAccounts.orgAdmin.email + ';' + S.selectedEnvironment.admin_userGroup.name
-            D.newCase.caseOfficers = [S.userAccounts.orgAdmin.name, S.selectedEnvironment.admin_userGroup.name]
+            ui.app.remove_excel_file_if_exists(fileName)
 
-            E.generateDataFor_CASES_Importer([D.newCase]);
+            let case1 = D.getNewCaseData()
+            E.generateDataFor_CASES_Importer([case1]);
+            D.getNewItemData(case1);
+            case1.caseOfficers_importFormat = S.userAccounts.orgAdmin.email + ';' + S.selectedEnvironment.admin_userGroup.name
+            case1.caseOfficers = [S.userAccounts.orgAdmin.name, S.selectedEnvironment.admin_userGroup.name]
 
             ui.app.generate_excel_file(fileName, E.caseImportDataWithAllFields);
             api.org_settings.enable_all_Case_fields();
@@ -164,7 +165,7 @@ for (let i = 0; i < 1; i++) {
                 .check_import_status_on_grid('1 records imported', 120)
                 .quick_search_for_case(D.newCase.caseNumber);
 
-            ui.caseView.verify_Case_View_page_is_open(D.newCase.caseNumber)
+            ui.caseView.verify_Case_View_page_is_open(D.case1.caseNumber)
                 .click_button_on_active_tab(C.buttons.edit)
                 .verify_values_on_Edit_form(D.case1)
                 .open_last_history_record()
@@ -172,14 +173,13 @@ for (let i = 0; i < 1; i++) {
                 .click_button_on_modal(C.buttons.cancel)
                 .verify_title_on_active_tab(1)
 
-            D.newItem.caseNumber = D.newCase.caseNumber
             ui.menu.click_Add__Item();
-            ui.addItem.enter_Case_Number_and_select_on_typeahead(D.newCase.caseNumber)
+            ui.addItem.enter_Case_Number_and_select_on_typeahead(D.case1.caseNumber)
                 .populate_all_fields_on_both_forms(D.newItem, false, true)
                 .select_post_save_action(C.postSaveActions.viewAddedItem)
                 .click_Save(D.newItem)
                 .verify_Error_toast_message_is_NOT_visible();
-            ui.itemView.verify_Item_View_page_is_open(D.newCase.caseNumber)
+            ui.itemView.verify_Item_View_page_is_open(D.case1.caseNumber)
         })
 
         it('4. Workflow Service', function () {

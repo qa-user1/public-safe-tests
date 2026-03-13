@@ -12,6 +12,8 @@ let
     locationBarcodesSection = e => cy.get('#locations'),
     searchReportField = e => cy.get('[placeholder="Search Reports"]'),
     hideReport = e => cy.get('[tp-owner-id="report.createdById"]'),
+    mainContainer = e => cy.get('.ui-view-main'),
+    recoveryDate = e => cy.get('[ng-model="item.recoveryDate"]').last(),
     inventoryReportsRadiobuttons = e => cy.get('[class="ui-view-main ng-scope"]'),
     storageLocationInput = e => cy.findByPlaceholderText('Please scan or enter the bardcode of the location you would like to audit.')
 
@@ -69,6 +71,14 @@ export default class InventoryReportsPage extends BasePage {
         searchReportField().type(data);
         searchReportField().type('{enter}');
         this.pause(1)
+        return this;
+    }
+
+    verify_content_of_first_row_in_results_table(content, clickReloadIconBetweenAttempts = false) {
+        cy.verifyTextAndRetry(() => mainContainer().invoke('text'), 'showing 1 to', {clickReloadIconBetweenAttempts: clickReloadIconBetweenAttempts});
+        this.wait_until_spinner_disappears()
+        cy.verifyTextAndRetry(() => firstRowInResultsTable().invoke('text'), content, {clickReloadIconBetweenAttempts: clickReloadIconBetweenAttempts});
+        this.wait_until_spinner_disappears()
         return this;
     }
 

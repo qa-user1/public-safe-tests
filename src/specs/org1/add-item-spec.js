@@ -321,7 +321,7 @@ describe('Add Item', function () {
                 .enter_Case_Number_and_select_on_typeahead(D.newItem.caseNumber)
                 .select_Category(D.newItem.category)
                 .click_Next()
-                .enter_storage_location(inaccessibleLocation.name)
+                .enter_Storage_Location(inaccessibleLocation.name, false)
                 .verify_storage_location_typeahead_is_not_shown(inaccessibleLocation.name)
                 // .enter_storage_location(inaccessibleLocation.guid)
                 // .verify_storage_location_typeahead_is_not_shown()
