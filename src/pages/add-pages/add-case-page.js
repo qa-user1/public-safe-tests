@@ -5,23 +5,23 @@ const C = require('../../fixtures/constants');
 //************************************ ELEMENTS ***************************************//
 
 let
-    caseNumberInput_enabled = e => cy.get('[ng-model="case.caseNumber"]').eq(0),
+    caseNumberInput_enabled = e => cy.get('[casecontrolname="caseNumber"]').find('input'),
     active_form = e => cy.get('.form-horizontal').not('.ng-hide'),
     caseNumberInput_autoAssigned = e => cy.get('[placeholder="Case Number Auto Assigned"]'),
     requiredAsterisk = e => cy.get('[translate="ERRORS.REQUIRED_SIMPLE"]'),
-    offenseType = e => cy.get('[ng-model="case.offenseTypeId"]').eq(0),
-    caseOfficerInput = e => cy.get('[label="\'CASE_OFFICERS\'"]').find('input'),
+    offenseType = e => cy.get('[aria-label="Offense Type Selection"]').eq(0),
+    caseOfficerInput = e => cy.get('[formcontrolname="caseOfficerInput"]').find('input'),
     caseOfficerTypeahead = e => cy.get('[ng-repeat="item in $group.items"]').first(),
-    offenseLocationInput = e => cy.findByPlaceholderText(C.placeholders.addCase.offenseLocation),
-    tagsInput = e => cy.findAllByPlaceholderText(C.placeholders.addCase.addTags).eq(1),
+    offenseLocationInput = e => cy.get('[placeholder="offense location"]'),
+    tagsInput = e => cy.get('[placeholder="Add and edit tag(s)"]'),
     tagsInputWithinActiveForm = e => active_form().find('[label="\'CASES.EDIT.TAGS\'"]').find('input'),
-    offenseDescriptionInput = e => cy.findByPlaceholderText(C.placeholders.addCase.offenseDescription),
-    reviewDateNotes = e => cy.findByPlaceholderText(C.placeholders.addCase.reviewDateNotes),
-    offenseDateInput = e => cy.get('[ng-model="ngModel"]').eq(0),
-    reviewDateInput = e => cy.get('[ng-model="case.reviewDate"]').find('[ng-model="ngModel"]'),
+    offenseDescriptionInput = e => cy.get('#caseOffenseDescr'),
+    reviewDateNotes = e => cy.get('#reviewDateNotes'),
+    offenseDateInput = e => cy.get('[placeholder="Offense Date"]').eq(0),
+    reviewDateInput = e => cy.get('[placeholder="Review Date"]'),
     addCaseHeader = e => cy.get('[translate="CASES.ADD.MODAL_HEADING"]'),
     statusToggleButton = e => cy.get('[ng-model="caseEdit.active"]'),
-    closedDate = e => cy.get('[ng-model="caseEdit.closedDate"]').find('[ng-model="ngModel"]'),
+    closedDate = e => cy.get('[placeholder="Closed Date"]'),
     toastMessage = (timeout = 50000) => cy.get('.toast', {timeout: timeout})
 
 export default class AddCasePage extends BaseAddPage {
@@ -33,7 +33,6 @@ export default class AddCasePage extends BaseAddPage {
 //************************************ ACTIONS ***************************************//
 
     verify_Add_Case_page_is_open() {
-        requiredAsterisk().should('be.visible');
         addCaseHeader().should('contain', C.labels.addCase.title);
         return this;
     };
@@ -44,8 +43,12 @@ export default class AddCasePage extends BaseAddPage {
         return this;
     };
 
-    populate_all_fields_on_second_form(caseObject) {
-
+    populate_all_fields(caseObject, clearPrefix = false) {
+        this.wait_until_spinner_disappears();
+        if (caseObject.caseNumber) {
+            this.enter_Case_Number(caseObject.caseNumber, clearPrefix)
+        }
+        this.select_Offense_Type(caseObject.offenseType)
         this.select_location_from_Google_Address_Lookup(offenseLocationInput, caseObject.offenseLocation)
 
         this.type_if_values_provided(
@@ -54,11 +57,12 @@ export default class AddCasePage extends BaseAddPage {
                 [reviewDateInput, caseObject.reviewDate],
                 [reviewDateNotes, caseObject.reviewDateNotes],
                 [offenseDescriptionInput, caseObject.offenseDescription],
+                [closedDate, caseObject.closedDate],
             ]);
 
         this.enter_values_on_several_multi_select_typeahead_fields(
             [
-                [caseOfficerInput, caseObject.caseOfficers, "users/groups"],
+                [caseOfficerInput, caseObject.caseOfficers],
                 [tagsInput, caseObject.tags, this.lastTagOnTypeahead],
             ]);
 
@@ -108,17 +112,6 @@ export default class AddCasePage extends BaseAddPage {
             ]);
         return this
     }
-
-    populate_all_fields_on_both_forms(caseObject, clearPrefix = false) {
-        this.wait_until_spinner_disappears();
-        if (caseObject.caseNumber) {
-            this.enter_Case_Number(caseObject.caseNumber, clearPrefix)
-        }
-        this.select_Offense_Type(caseObject.offenseType)
-            .click_Next()
-            .populate_all_fields_on_second_form(caseObject);
-        return this;
-    };
 
     verify_Case_Number_value(caseNo) {
         active_form().should('be.visible');

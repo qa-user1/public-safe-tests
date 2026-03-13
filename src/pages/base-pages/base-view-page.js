@@ -44,7 +44,7 @@ let
     element_on_active_tab = text => active_tab_container().children().contains(text).first(),
     active_tab_container = e => cy.get('[class="tab-pane ng-scope active"]'),
     edit_button_on_active_tab = text => active_tab_container().children().find('[translate="GENERAL.EDIT"]'),
-    save_button_on_active_tab = text => active_tab_container().children().find('[button-text="\'GENERAL.BUTTON_SAVE\'"]').find('button'),
+    save_button_on_active_tab = text => cy.get('[translate="GENERAL.BUTTON_SAVE"]'),
     mediaDescriptionField = e => cy.get('[stop-event="touchend"]'),
     mediaDescriptionInput = e => cy.get('[stop-event="touchend"]').find('input'),
     noteInput = e => cy.get('[ui-view="notes"]').find('textarea'),
@@ -201,15 +201,8 @@ export default class BaseViewPage extends BasePage {
     }
 
     click_Edit() {
-        this.pause(0.5)
-        // edit_button_on_active_tab().click();
-
-        //cy.get('.tab-pane.ng-scope.active').within(() => {
-        cy.get('[translate="GENERAL.EDIT"]').first().should('exist') // or .should('exist') for presence check
-        cy.get('[translate="GENERAL.EDIT"]').first().click(); // or .should('exist') for presence check
-        // });
-
-        this.pause(1)
+        this.pause(2)
+        cy.get('[translate="GENERAL.EDIT"]').scrollIntoView().should('be.enabled').click();
 
         this.wait_element_to_be_visible(save_button_on_active_tab)
         this.verify_Save_isPresent()

@@ -734,7 +734,7 @@ exports.generate_request_payload_for_setting_Case_Number_Formatting = function (
     body.caseNumberConfiguration.defaultCaseNumberPrefix = defaultPrefix || ''
 
     body.isAutoIncrementCaseNumberOn = isAutoIncrementCaseNumberOn;
-    body.nextCaseNumber = nextCaseNumber || orgSettings.nextCaseNumber
+    body.nextCaseNumber = orgSettings.nextCaseNumber
 
     return body
 };

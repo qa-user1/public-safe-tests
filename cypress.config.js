@@ -52,6 +52,12 @@ module.exports = defineConfig({
                 domain: 'DEV',
                 runPreconditionForSpecificEnv: true,
             },
+            dev2: {
+                baseUrl: 'https://dev2.trackerproducts.com',
+                apiUrl: 'https://devapi.trackerproducts.com',
+                domain: 'DEV',
+                runPreconditionForSpecificEnv: true,
+            },
             secure: {
                 baseUrl: 'https://secure.trackerproducts.com',
                 apiUrl: 'https://securelb.trackerproducts.com',

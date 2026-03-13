@@ -13,11 +13,14 @@ let casesApi = require('../../api-utils/endpoints/cases/collection')
 //************************************ ELEMENTS ***************************************//
 let bodyContainer = e => cy.get('body'), tableBody = e => cy.get('.table-striped').find('tbody'),
     pencilIcon = e => cy.get('.fa-pencil').first(),
+    email = e => cy.get('[placeholder="Email"]'),
+    password = e => cy.get('[placeholder="Password"]'),
+    loginButton = e => cy.contains('button', 'Login'),
     descriptionOnGrid = e => cy.get('[class="bs-grid-text-input ng-scope"]').find('input'),
     okButton = e => cy.findAllByText('Ok').last(),
     okButton_capital_letters = e => cy.findAllByText('OK').last(),
     // saveButton = e => cy.get('[button-text="\'GENERAL.BUTTON_SAVE\'"]').contains('Save'),
-    saveButton = e => cy.get('[button-text="\'GENERAL.BUTTON_SAVE\'"]').contains('Save'),
+    saveButton = e => cy.get('[translate="GENERAL.BUTTON_SAVE"]'),
     // saveButton = e => cy.get('.btn-group').contains('Save'),
     saveAutoDispoButton = e => cy.get('[id="saveAutoDispo"]').contains('Save'),
     editButton = e => cy.get('[translate="GENERAL.EDIT"]').contains('Edit'),
@@ -46,12 +49,12 @@ let bodyContainer = e => cy.get('body'), tableBody = e => cy.get('.table-striped
     modal__ = e => cy.get('.modal-content'),
     modalBodySectionAboveFooter = e => cy.get('.modal-body').children('div').last(),
     itemCategoryOnMassUpdate = e => cy.get('[ng-model="item.categoryId"]'),
-    sweetAlert = e => cy.get('[data-animation="pop"]'),
+    sweetAlert = e => cy.get('[id="alertModal"]'),
     sweetAlertHeader = e => cy.get('[data-animation="pop"]').find('h2'),
     lastCoCMediaButton = e => cy.get('[class="btn btn-default btn-xs btn-block ng-binding"]').eq(1),
     typeaheadList = e => cy.get('.ui-select-choices'),
     firstTypeaheadOption = e => cy.get('.ui-select-choices-row').first(), //highlightedOptionOnTypeahead = e => cy.get('.ui-select-choices-row-inner').last(),
-    highlightedOptionOnTypeahead = e => cy.get('.ui-select-highlight').last(),
+    highlightedOptionOnTypeahead = e => cy.get('ngb-highlight').last(),
     firstPersonOnItemBelongsToTypeahead = e => cy.get('[ng-repeat="person in $select.items"]').first(),
     specificPersonOnItemBelongsToTypeahead = person => cy.get('[ng-repeat="person in $select.items"]').contains(person),
     firstMatchOnTypeahead = e => cy.get('[ng-repeat="match in matches track by $index"]').first(),
@@ -71,7 +74,7 @@ let bodyContainer = e => cy.get('body'), tableBody = e => cy.get('.table-striped
     checkboxFieldFoundByLabel = label => cy.contains(label).parent('div').find('[type="checkbox"]').first(),
     buttonOnModal = buttonTitle => modal().children().contains(buttonTitle),
     textOnModal = text => modal().children().contains(text),
-    buttonOnSweetAlert = buttonTitle => sweetAlert().children().contains('button', buttonTitle),
+    buttonOnSweetAlert = buttonTitle => cy.get('c-modal-footer').children().contains(buttonTitle),
     buttonOnActiveTab = buttonTitle => active_tab().find('button').contains(buttonTitle),
     elementOnActiveTab = elementTitle => active_tab().contains(elementTitle),
     optionsDropdownUnderMenuCustomization = e => cy.get('[is-open="optionsToggle.isOpen"]'),
@@ -89,7 +92,7 @@ let bodyContainer = e => cy.get('body'), tableBody = e => cy.get('.table-striped
     tableOnModal = e => modal().find('tbody'),
     asterisks = e => cy.get('[ng-if="form.state[field.name].$error.required"]'),
     optionOnTypeahead = option => cy.get('.dropdown-menu[aria-hidden="false"]').contains(option),
-    mainContainer = e => cy.get('.ui-view-main'), recoveryDate = e => cy.get('[ng-model="item.recoveryDate"]').last(),
+    mainContainer = e => cy.get('.d-flex'), recoveryDate = e => cy.get('[ng-model="item.recoveryDate"]').last(),
     itemBelongsTo = e => cy.get('[placeholder="Persons for search"]').last(),
     textOnMainContainer = text => cy.get('.ui-view-main').contains(text),
     toastMessage = (timeout = 50000) => cy.get('.toast', {timeout: timeout}),
@@ -144,7 +147,8 @@ let bodyContainer = e => cy.get('body'), tableBody = e => cy.get('.table-striped
     checkboxToSelectAll = e => cy.get('[ng-model="options.selectAllToggle"]').first(),
     statisticsBlock = e => cy.get('.statistic-block').first(),
     selectedItems = e => cy.get('[ng-if="options.selectedItems.length != 0"]').first(), // locationPin = name => cy.contains(name).parent('div'),
-    locationPin = e => cy.get('.pac-matched'), firstCheckboxOnTableBody = e => cy.get('.bg-grid-checkbox').first(),
+    locationPin = location => cy.contains('button', location),
+    firstCheckboxOnTableBody = e => cy.get('.bg-grid-checkbox').first(),
     checkboxOnSpecificTableRow = rowNumber => resultsTable().find('.bg-grid-checkbox', {timeout: 0}).eq(rowNumber - 1),
     bsGridCheckboxes = rowNumber => cy.get('.bg-grid-checkbox', {timeout: 0}).eq(rowNumber - 1),
     checkboxOnTableRowOnModal = rowNumber => tableOnModal().find('.bg-grid-checkbox').eq(rowNumber - 1),
@@ -154,7 +158,7 @@ let bodyContainer = e => cy.get('body'), tableBody = e => cy.get('.table-striped
     offenseTypeOnTypeahead = e => cy.get('[ng-repeat="match in matches track by $index"]'),
     firstLocationOnTypeahead = e => cy.get('[ng-repeat="match in matches track by $index"]').first(),
     locationsOnTypeahead = e => cy.get('[ng-repeat="match in matches track by $index"]'),
-    lastTagOnTypeahead = e => cy.get('[ng-repeat="tagModel in $select.items"]').last(),
+    lastTagOnTypeahead = e => cy.get('ngb-highlight').last(),
     caseOfficerTypeahead = e => cy.get('[ng-repeat="item in $group.items"]').first(),
     createPersonalTagOnTypeahead = e => cy.get('[ng-repeat="tagModel in $select.items"]').first(),
     addItemHeader = e => cy.get('[translate="ITEMS.ADD.MODAL_HEADING"]'),
@@ -402,12 +406,12 @@ let basePage = class BasePage {
     }
 
     verify_selected_office(orgAndOfficeName) {
-       cy.get('.nav-office').should('contain', orgAndOfficeName)
+        cy.get('.nav-office').should('contain', orgAndOfficeName)
         return this;
     };
 
     verify_text_is_present_on_main_container(text) {
-        this.toastMessage().should('not.exist');
+       // this.toastMessage().should('not.exist');
 
         if (Array.isArray(text)) {
             text.forEach(txt => cy.verifyTextAndRetry(() => mainContainer().invoke('text'), txt))
@@ -685,7 +689,7 @@ let basePage = class BasePage {
 
     click_Search() {
         cy.intercept('POST', '**/search').as('search')
-       // this.click(C.buttons.search, mainContainer());
+        // this.click(C.buttons.search, mainContainer());
         cy.get('#search-button').click()
         cy.wait('@search')
         this.wait_until_spinner_disappears()
@@ -709,7 +713,6 @@ let basePage = class BasePage {
 
     click_button_on_sweet_alert(buttonTitle) {
         this.pause(1)
-        buttonOnSweetAlert(buttonTitle).should('be.visible');
         buttonOnSweetAlert(buttonTitle).click();
         return this;
     };
@@ -1791,7 +1794,7 @@ let basePage = class BasePage {
             .then(interception => {
                 // //cy.log('Intercepted response is ' + JSON.stringify(interception))
                 let responseStatus = interception.status || interception.response.statusCode
-                expect(responseStatus).to.equal(status);
+                if (status) expect(responseStatus).to.equal(status);
                 if (propertyToSaveToLocalStorage) {
                     cy.setLocalStorage(propertyToSaveToLocalStorage, JSON.stringify(interception.response.body));
                     if (S.selectedEnvironment[propertyToSaveToLocalStorage]) {
@@ -2081,7 +2084,7 @@ let basePage = class BasePage {
     select_location_from_Google_Address_Lookup(el, name) {
         if (name) {
             el().type(name.substr(0, 6))
-            locationPin().first().click();
+            locationPin(name).first().click();
         }
         return this;
     };
@@ -3028,6 +3031,33 @@ let basePage = class BasePage {
         return this
     };
 
+    log_in(userAccount) {
+        cy.clearLocalStorage()
+        this.define_API_request_to_be_awaited('POST', 'token')
+        this.open_base_url()
+        this.enterValue(email, userAccount.email)
+        this.enterValue(password, userAccount.password)
+        loginButton().click();
+        this.pause(1)
+
+        cy.document().then((doc) => {
+            const found = doc.body.innerText.includes('Your account is logged in on another machine/browser. If you continue, you will be logged out.');
+            if (found) {
+                this.click_button_on_sweet_alert('Yes')
+            }
+        })
+            .then(() => {
+                this.wait_response_from_API_call('token', null)
+                this.pause(2)
+            })
+            // .then(() => {
+            //     cy.getLocalStorage("access-token").then(token => {
+            //         cy.log('TOKEN' + token)
+            //     })
+            // })
+        return this
+    };
+
     open_Dashboard() {
         cy.visit(S.base_url);
         this.verify_text_is_present_on_main_container('Welcome')
@@ -3245,8 +3275,7 @@ let basePage = class BasePage {
     };
 
     wait_until_spinner_disappears(timeoutInSeconds = 80) {
-        bodyContainer().should('not.have.class', 'pace-running', {timeout: timeoutInSeconds * 1000});
-        bodyContainer().should('have.class', 'pace-done', {timeout: timeoutInSeconds * 1000});
+        cy.get('body').find(':visible').should('not.contain', 'Loading...');
         return this;
     };
 

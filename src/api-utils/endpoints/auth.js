@@ -19,7 +19,7 @@ function token_request(selectedUser) {
         body: {
             grant_type: 'password',
             username: selectedUser.email,
-            password: selectedUser.password,
+            password: selectedUser.password
         },
         headers: {
             'kick-out-user': true
@@ -60,6 +60,7 @@ exports.get_tokens = function (selectedUser, arrayOfPropertiesToRetain, specific
 
             } else {
                 exports.keep_some_values_in_local_storage(arrayOfPropertiesToRetain, selectedUser, response, userFromLocalStorage)
+           cy.wait(2000)
             }
         })
         .then(() => {
@@ -67,7 +68,7 @@ exports.get_tokens = function (selectedUser, arrayOfPropertiesToRetain, specific
                 ui.app.wait_all_dashboard_GET_requests();
                 // cy.get('.alert-dismissable').eq(0).invoke('remove');
                 // cy.get('.alert-dismissable').eq(0).invoke('remove');
-                cy.getLocalStorage("token").should("not.equal", null).then(() => {
+                cy.getLocalStorage("access-token").should("not.equal", null).then(() => {
                     cy.saveLocalStorage().then(() => {
 
                         if (selectedUser.title === S.userRoles.systemAdmin || specificOffice) {
@@ -97,7 +98,7 @@ exports.get_tokens = function (selectedUser, arrayOfPropertiesToRetain, specific
 exports.get_tokens_without_page_load = function (selectedUser, arrayOfPropertiesToRetain) {
 
     ui.app.define_API_request_to_be_awaited('GET', '', 'all_GET_Requests')
-    ui.app.define_all_dashboard_GET_requests();
+   // ui.app.define_all_dashboard_GET_requests();
     // cy.log(`Logging in with  __________________________________________________________
     //             ${selectedUser.email} /  ${selectedUser.password}
     //              _________________________________________________________________________
@@ -119,7 +120,7 @@ exports.get_tokens_without_page_load = function (selectedUser, arrayOfProperties
         })
         .then(() => {
             //   ui.app.wait_all_dashboard_GET_requests();
-            cy.getLocalStorage("token").should("not.equal", null).then(() => {
+            cy.getLocalStorage("access-token").should("not.equal", null).then(() => {
                 cy.saveLocalStorage().then(() => {
 
                     if (selectedUser.title === S.userRoles.systemAdmin) {
@@ -157,6 +158,9 @@ exports.keep_some_values_in_local_storage = function (arrayOfPropertiesToRetain,
             'currentCase',
             'currentUserSettings',
             'profile',
+            'access-token',
+            'refresh-token',
+            'userId',
         ]
 
         if (arrayOfPropertiesToRetain) {
@@ -179,15 +183,26 @@ exports.keep_some_values_in_local_storage = function (arrayOfPropertiesToRetain,
             let headers = {
                 'Content-Type': 'application/json',
                 officeid: selectedUser.officeId,
-                organizationid: selectedUser.organizationId,
+                organizationid:  selectedUser.organizationId,
                 authorization: 'Bearer ' + response.access_token,
                 refreshtoken: response.refresh_token,
             };
 
             cy.setLocalStorage("headers", JSON.stringify(headers));
             cy.setLocalStorage("identity_data", tokens);
-            cy.setLocalStorage("token", JSON.stringify(response.access_token));
-            cy.setLocalStorage("refresh-token", JSON.stringify(response.refresh_token));
+            cy.setLocalStorage("currentOfficeId", selectedUser.officeId);
+            cy.setLocalStorage("currentOrganizationId", selectedUser.organizationId);
+            cy.setLocalStorage("access-token", response.access_token);
+            cy.setLocalStorage("refresh-token", response.refresh_token);
+            cy.setLocalStorage("userId", selectedUser.id);
+            cy.setLocalStorage("userName", selectedUser.email);
+            cy.setLocalStorage("loginTime", 'Wed, 11 Mar 2026 10:11:33 GMT');
+            cy.setLocalStorage("dateFormat", 'shortDate');
+            cy.setLocalStorage("dateTimeFormat", 'short');
+            cy.setLocalStorage("BrowserId", 'e2074844-1b5e-40ef-bcaa-e87327d1d2a1');
+            cy.setLocalStorage("isAdmin", 'false');
+            cy.setLocalStorage("isOrgAdmin", selectedUser.isOrgAdmin);
+            cy.setLocalStorage("autoDispoSettings", '{"isAutoDispositionOn":true,"officeAutoDispositionReviewers":[{"officeId":11082,"officeName":"Cypress Office 1","generalTaskFromUserId":63328,"generalTaskFromUserGroupId":null,"isDefault":true,"isGeneralTaskFromUser":true},{"officeId":11091,"officeName":"Cypress Office 2","generalTaskFromUserId":63328,"generalTaskFromUserGroupId":null,"isDefault":false,"isGeneralTaskFromUser":true},{"officeId":11100,"officeName":"Office 3","generalTaskFromUserId":null,"generalTaskFromUserGroupId":null,"isDefault":false,"isGeneralTaskFromUser":false}],"settings":[{"id":7933,"active":true,"daysToFollowUp":100,"organizationId":558,"organization":null,"offenseTypeId":2,"offenseType":{"id":2,"name":"Arson","active":true,"organizationOffenseTypeFollowUpDays":null,"customDropdownCategoryId":1,"customDropdownCategory":null,"autoDispositionSettings":null}},{"id":7935,"active":true,"daysToFollowUp":33,"organizationId":558,"organization":null,"offenseTypeId":4,"offenseType":{"id":4,"name":"Burglary","active":true,"organizationOffenseTypeFollowUpDays":null,"customDropdownCategoryId":1,"customDropdownCategory":null,"autoDispositionSettings":null}},{"id":7961,"active":true,"daysToFollowUp":100,"organizationId":558,"organization":null,"offenseTypeId":28,"offenseType":{"id":28,"name":"Vandalism","active":true,"organizationOffenseTypeFollowUpDays":null,"customDropdownCategoryId":1,"customDropdownCategory":null,"autoDispositionSettings":null}},{"id":7952,"active":true,"daysToFollowUp":100,"organizationId":558,"organization":null,"offenseTypeId":158,"offenseType":{"id":158,"name":"Accident","active":true,"organizationOffenseTypeFollowUpDays":null,"customDropdownCategoryId":1,"customDropdownCategory":null,"autoDispositionSettings":null}}]}');
 
 
             if ((selectedUser.title === 'Org Admin' || selectedUser.title === 'System Admin')
@@ -226,40 +241,48 @@ exports.keep_some_values_in_local_storage = function (arrayOfPropertiesToRetain,
                     })
                 })
 
-                cy.setLocalStorage("BrowserId", JSON.stringify('98a5ccc2-8c6b-4352-a786-5a215de12710'));
-                cy.setLocalStorage("deviceId", JSON.stringify("f482591a-0d77-4531-b28d-f08d038e6484"));
-                cy.setLocalStorage("maxStringFieldLength", JSON.stringify("10000"));
-                cy.setLocalStorage("selected", JSON.stringify({
-                    "selectedOfficeId": selectedUser.officeId,
-                    "selectedOrganizationId": selectedUser.organizationId,
-                    "selectedOrganizationProductTypeId": 1
-                }));
-                cy.setLocalStorage("isMostRecentCaseCurrent", JSON.stringify(true));
-                cy.setLocalStorage("uac", []);
-                cy.setLocalStorage("loginTimeAndVersion", JSON.stringify({
-                    "loginTimeAsUtcString": new Date().toUTCString(),
-                    "systemVersionNumberStringAtLogin": "8.73.001"
-                }));
-                cy.setLocalStorage("isOrgAutoIncrementCaseNumberOn", false);
-                cy.setLocalStorage("undefined_isSaasAccepted", true);
-                cy.setLocalStorage("uac", []);
-                cy.setLocalStorage("opfs", null);
-                cy.setLocalStorage("isOrgAdmin", selectedUser.isOrgAdmin);
+             //    cy.setLocalStorage("userOfficeSettings", JSON.stringify('[{"userId":0,"currentOfficeId":0,"currentOrganizationId":0,"currentOfficeName":""},{"userId":63324,"currentOfficeId":11081,"currentOrganizationId":557,"currentOfficeName":"Web Test Automation #1 - Cypress Office 1"},{"userId":40357,"currentOfficeId":1,"currentOrganizationId":1,"currentOfficeName":"Tracker Products - Office Ukr Testing"}]'));
+             //    cy.setLocalStorage("saml-login-url", JSON.stringify('null'));
+             //    cy.setLocalStorage("userId", JSON.stringify('63324'));
+             //    cy.setLocalStorage("currentOrganizationId", JSON.stringify('557'));
+             //    cy.setLocalStorage("currentOfficeId", JSON.stringify('11081'));
+             //    cy.setLocalStorage("dateFormat", JSON.stringify('shortDate'));
+             //    cy.setLocalStorage("signatureConfig.defaultSignatureDevice", JSON.stringify('2'));
+             //    cy.setLocalStorage("userName", JSON.stringify('qa+org1admin@trackerproducts.com'));
+             //    cy.setLocalStorage("BrowserId", JSON.stringify('98a5ccc2-8c6b-4352-a786-5a215de12710'));
+             // //   cy.setLocalStorage("deviceId", JSON.stringify("f482591a-0d77-4531-b28d-f08d038e6484"));
+             //    cy.setLocalStorage("maxStringFieldLength", JSON.stringify("10000"));
+             //    cy.setLocalStorage("selected", JSON.stringify({
+             //        "selectedOfficeId": selectedUser.officeId,
+             //        "selectedOrganizationId": selectedUser.organizationId,
+             //        "selectedOrganizationProductTypeId": 1
+             //    }));
+             //    cy.setLocalStorage("isMostRecentCaseCurrent", JSON.stringify(true));
+             //    cy.setLocalStorage("uac", []);
+             //    cy.setLocalStorage("loginTimeAndVersion", JSON.stringify({
+             //        "loginTimeAsUtcString": new Date().toUTCString(),
+             //        "systemVersionNumberStringAtLogin": "8.73.001"
+             //    }));
+             //    cy.setLocalStorage("isOrgAutoIncrementCaseNumberOn", false);
+             //    cy.setLocalStorage("undefined_isSaasAccepted", true);
+             //    cy.setLocalStorage("uac", []);
+             //    cy.setLocalStorage("opfs", null);
+             //    cy.setLocalStorage("isOrgAdmin", selectedUser.isOrgAdmin);
             }
         })
     }
 };
 
 exports.log_out = function (selectedUser) {
-    cy.getLocalStorage("token").then(token => {
+    cy.getLocalStorage("access-token").then(token => {
         cy.getLocalStorage("refresh-token").then(refresh_token => {
 
             let headers = {
                 'Content-Type': 'application/json',
-                officeid: selectedUser.officeId,
-                organizationid: selectedUser.organizationId,
-                authorization: 'Bearer ' + JSON.parse(token),
-                refreshtoken: JSON.parse(refresh_token),
+                Officeid: selectedUser.officeId,
+                Organizationid: selectedUser.organizationId,
+                Authorization: 'Bearer ' + JSON.parse(token),
+                Refreshtoken: JSON.parse(refresh_token),
             };
 
             cy.setLocalStorage("headers", JSON.stringify(headers));

@@ -22,22 +22,22 @@ let
     userGroupInputInPermissionGroup = permissionGroupName => permissionGroupContainer(permissionGroupName).children().find('input[placeholder="User groups..."]'),
     permissionGroupInputInPermissionGroup = permissionGroupName => permissionGroupContainer(permissionGroupName).children().find('input[placeholder="Permission Groups"]'),
     toggle = e => active_tab().children().find('.toggle'),
-    caseNumberInput_disabled = e => cy.get('[name="CaseNumber"]'),
-    caseNumberInput_enabled = e => cy.get('[ng-model="caseEdit.caseNumber"]'),
+    caseNumberInput_disabled = e => cy.get('case-number-entry').find('input'),
+    caseNumberInput_enabled = e => cy.get('[casecontrolname="caseNumber"]').find('input'),
     officeDropdown = e => cy.get('[ng-model="caseEdit.officeId"]'),
     offenseTypeDropdown = e => cy.get('[ng-model="caseEdit.offenseTypeId"]'),
-    offenseTypeSelectedValue = e => cy.get('[ng-model="caseEdit.offenseTypeId"]').find('[selected="selected"]'),
-    offenseLocationInput = e => cy.get('[ng-model="caseEdit.offenseLocation"]'),
-    offenseDescriptionInput = e => cy.get('[ng-model="caseEdit.offenseDescription"]'),
+    offenseTypeSelectedValue = e => cy.get('[aria-label="Offense Type Selection"]'),
+    offenseLocationInput = e => cy.get('[placeholder="offense location"]'),
+    offenseDescriptionInput = e => cy.get('[id="caseOffenseDescr"]'),
     active_form = e => cy.get('.form-horizontal').not('.ng-hide'),
     tagsInput = e => cy.contains('Tags').parent('div').find('input'),
-    offenseType = e => cy.get('[name="offenseType"]').eq(0),
+    offenseType = e => cy.get('[aria-label="Offense Type Selection"]').eq(0),
     // tagsInput = e => tagsContainer().find('input[role="combobox"]'),
-    reviewDateNotesInput = e => cy.get('[ng-model="caseEdit.reviewDateNotes"]'),
-    offenseDateInput = e => cy.get('[ng-model="caseEdit.offenseDate"]').find('[ng-model="ngModel"]'),
-    closedDateInput = e => cy.get('[ng-model="caseEdit.closedDate"]').find('[ng-model="ngModel"]'),
-    reviewDateInput = e => cy.get('[ng-model="caseEdit.reviewDate"]').find('[ng-model="ngModel"]'),
-    caseOfficerField = e => cy.get('[name="caseOfficers"]'),
+    reviewDateNotesInput = e => cy.get('[id="reviewDateNotes"]'),
+    offenseDateInput = e => cy.get('[placeholder="Offense Date"]'),
+    closedDateInput = e => cy.get('[placeholder="Closed Date"]'),
+    reviewDateInput = e => cy.get('[placeholder="Review Date"'),
+    caseOfficerField = e => cy.get('[formcontrolname="caseOfficerInput"]'),
     caseOfficerInput = e => cy.get('[name="caseOfficers"]').find('input'),
     caseOfficerEdit = e => cy.get('[id="caseOfficersEdit"]').find('input'),
     offenseLocationTypeahead = e => cy.root().parents('html').find('.pac-item').eq(0),
@@ -55,7 +55,7 @@ let
     reviewDate__ = e => cy.contains('Review Date').parent('div').find('ng-transclude'),
     reviewDateNotes__ = e => cy.contains('Review Date Notes').parent('div').find('textarea'),
     statusToggle_  = e => cy.contains('Status').parent('div').find('.toggle'),
-    tagsField = e => cy.get('[tagging="addNew"]')
+    tagsField = e => cy.get('[formcontrolname="tags"]')
 
 
 export default class CaseViewPage extends BaseViewPage {
@@ -122,6 +122,9 @@ export default class CaseViewPage extends BaseViewPage {
                 [tagsField, caseObject.tags],
                 [offenseTypeSelectedValue, caseObject.offenseType],
             ]);
+
+        offenseTypeSelectedValue().find('option:selected')
+            .should('have.text', caseObject.offenseType)
 
         if (includesCustomData) {
             this.verify_custom_data_on_Edit_form(caseObject)

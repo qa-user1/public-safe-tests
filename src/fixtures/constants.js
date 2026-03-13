@@ -864,7 +864,7 @@ C.labels = {
         title: 'Add Person'
     },
     caseView: {
-        title: 'Case View'
+        title: 'Case Details'
     },
     itemView: {
         title: 'Item View'

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "openRunnerQA": "./node_modules/.bin/cypress open --env environment=qa,orgNum=1 ",
+    "openRunnerDev2-org1": "cypress open --env environment=dev2,orgNum=1",
     "openRunnerDev-org1": "cypress open --env environment=dev,orgNum=1",
     "openRunnerDev-org2": "cypress open --env environment=dev,orgNum=2",
     "openRunnerDev-org3": "cypress open --env environment=dev,orgNum=3",

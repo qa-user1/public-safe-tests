@@ -6,69 +6,80 @@ function request_with_JSON_data(httpMethod, urlSuffix, requestBody, log = '', pr
         return Object.prototype.toString.call(variable) === '[object Object]'
     }
 
-    cy.getLocalStorage("headers").then(headers => {
+    cy.getLocalStorage("access-token").then(token => {
+        cy.getLocalStorage("refresh-token").then(refreshToken => {
+            cy.getLocalStorage("currentOfficeId").then(officeId => {
+                cy.getLocalStorage("currentOrganizationId").then(orgId => {
 
-        timeout = timeout || S.api_timeout
-            cy.request({
-                url: S.api_url + urlSuffix,
-                method: httpMethod,
-                json: true,
-                body: requestBody,
-                headers: JSON.parse(headers),
-                timeout: timeout
+                    timeout = timeout || S.api_timeout
+                    cy.request({
+                        url: S.api_url + urlSuffix,
+                        method: httpMethod,
+                        json: true,
+                        body: requestBody,
+                        headers:
+                            {
+                                Authorization: `Bearer ${token}`,
+                                Refreshtoken: refreshToken,
+                                Officeid: officeId,
+                                OrganizationId: orgId
+                            },
+                        timeout: timeout
+                    })
+                        .then(response => {
+                            let propertyName;
+                            let propertyValue;
+
+                            if (log === 'response') {
+                                cy.log('RESPONSE IS ' + JSON.stringify(response.body))
+                                cy.setLocalStorage('apiResponse', JSON.stringify(response.body));
+                            }
+
+                            propertyName = propertyToSaveInLocalStorage || '';
+
+                            // set value to be saved in settings.js file and local storage
+                            if (specificResponseProperty) {
+                                propertyValue = JSON.stringify(response.body[specificResponseProperty]);
+
+                                if (isObject(propertyValue)) {
+                                    S.selectedEnvironment[propertyName] = Object.assign(S.selectedEnvironment[propertyName], JSON.parse(propertyValue));
+                                } else {
+                                    S.selectedEnvironment[propertyName] = JSON.parse(propertyValue);
+                                }
+
+                                cy.setLocalStorage(propertyName, propertyValue);
+                            } else if (response.body) {
+                                propertyValue = JSON.stringify(response.body);
+
+                                if (isObject(propertyValue)) {
+                                    S.selectedEnvironment[propertyName] = Object.assign(S.selectedEnvironment[propertyName], JSON.parse(propertyValue));
+                                } else {
+                                    S.selectedEnvironment[propertyName] = JSON.parse(propertyValue);
+                                }
+
+                                cy.setLocalStorage(propertyName, propertyValue);
+                            }
+
+                            if (S.enableApiLogs) {
+                                cy.log('*********************************************    ' + log + propertyName + ' ' + response + '     *********************************************', 'blue');
+                                console.log('*********************************************    ' + log + propertyName + ' ' + JSON.stringify(response) + '     *********************************************');
+
+
+                                // log message and/or ID from the response object if available
+                                if (response.body) {
+                                    cy.log('*********************************************    ' + log + propertyName + ' ' + propertyValue + '     *********************************************', 'blue');
+                                    console.log('*********************************************    ' + log + propertyName + ' ' + propertyValue + '     *********************************************');
+
+                                } else {
+                                    cy.log('*********************************************    ' + log + propertyName + '     *********************************************');
+                                    console.log('*********************************************    ' + log + propertyName + '     *********************************************');
+                                }
+                            }
+                        });
+                })
             })
-                .then(response => {
-                    let propertyName;
-                    let propertyValue;
-
-                    if (log === 'response') {
-                        cy.log('RESPONSE IS ' + JSON.stringify(response.body))
-                        cy.setLocalStorage('apiResponse', JSON.stringify(response.body));
-                    }
-
-                    propertyName = propertyToSaveInLocalStorage || '';
-
-                    // set value to be saved in settings.js file and local storage
-                    if (specificResponseProperty) {
-                        propertyValue = JSON.stringify(response.body[specificResponseProperty]);
-
-                        if (isObject(propertyValue)) {
-                            S.selectedEnvironment[propertyName] = Object.assign(S.selectedEnvironment[propertyName], JSON.parse(propertyValue));
-                        } else {
-                            S.selectedEnvironment[propertyName] = JSON.parse(propertyValue);
-                        }
-
-                        cy.setLocalStorage(propertyName, propertyValue);
-                    } else if (response.body) {
-                        propertyValue = JSON.stringify(response.body);
-
-                        if (isObject(propertyValue)) {
-                            S.selectedEnvironment[propertyName] = Object.assign(S.selectedEnvironment[propertyName], JSON.parse(propertyValue));
-                        } else {
-                            S.selectedEnvironment[propertyName] = JSON.parse(propertyValue);
-                        }
-
-                        cy.setLocalStorage(propertyName, propertyValue);
-                    }
-
-                    if (S.enableApiLogs) {
-                        cy.log('*********************************************    ' + log + propertyName + ' ' + response + '     *********************************************', 'blue');
-                        console.log('*********************************************    ' + log + propertyName + ' ' + JSON.stringify(response) + '     *********************************************');
-
-
-                        // log message and/or ID from the response object if available
-                        if (response.body) {
-                            cy.log('*********************************************    ' + log + propertyName + ' ' + propertyValue + '     *********************************************', 'blue');
-                            console.log('*********************************************    ' + log + propertyName + ' ' + propertyValue + '     *********************************************');
-
-                        } else {
-                            cy.log('*********************************************    ' + log + propertyName + '     *********************************************');
-                            console.log('*********************************************    ' + log + propertyName + '     *********************************************');
-                        }
-                    }
-                });
-        }
-    )
+        })
+    })
     return this;
 }
 

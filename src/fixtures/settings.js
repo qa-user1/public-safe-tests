@@ -412,8 +412,8 @@ S.DEV_1 = {
     },
     regularUser_permissionGroup: {
         name: 'Cypress - Regular User',
-        id: 2162,
-        startingIndexForViewPermissions: 65155,
+        id: 2216,
+        startingIndexForViewPermissions: 65942,
         get startingIndexForCreatePermissions() {
             return S.DEV_1.regularUser_permissionGroup.startingIndexForViewPermissions + 22
         },

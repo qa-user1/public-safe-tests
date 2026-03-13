@@ -10,13 +10,13 @@ let casesApi = require('../../api-utils/endpoints/cases/collection')
 let
     mainContainer = e => cy.get('.ibox-content'),
     nextButton = e => cy.get('[translate="GENERAL.BUTTON_NEXT"]'),
-    active_form = e => cy.get('.form-horizontal').not('.ng-hide'),
+    active_form = e => cy.get('.card-body'),
     offenseTypeInput = e => cy.get('[ng-model="case.offenseTypeId"]').eq(0),
-    caseNumberInput_enabled = e => active_form().find('[for="caseNumber"]').parent('div').find('input'),
+    caseNumberInput_enabled = e => active_form().find('[casecontrolname="caseNumber"]').find('input'),
     caseNumberInput_disabled = e => active_form().find('[for="caseNumber"]').parent('div').find('input'),
     postSaveAction = e => cy.get('#routeSelect'),
     checkbox = e => cy.get('.iCheck-helper'),
-    caseNumberInput = e => cy.get('[name="caseNumber"]'),
+    inlineValidationError = e => cy.get('.text-danger'),
     caseMinLimitError = e => cy.get('[translate="GENERAL.MIN_TEXT_INPUT_3"]'),
     caseMaxLimitError = e => cy.get('[translate="ERRORS.TOO_LONG"]');
 
@@ -43,7 +43,7 @@ export default class BaseAddPage extends BasePage {
     };
 
     clear_Case_Number() {
-        caseNumberInput().clear();
+        caseNumberInput_enabled().clear();
     }
 
     enter_Case_Number(caseNo) {
@@ -130,12 +130,12 @@ export default class BaseAddPage extends BasePage {
     verify_limits_for_Case_Number_length(caseNumberLimit) {
         this.enter_Case_Number(D.getRandomNo(caseNumberLimit));
         if (caseNumberLimit < 3) {
-            caseMinLimitError().should('contain', 'Minimum 3 characters');
+            inlineValidationError().should('contain', 'Minimum 3 characters');
         } else if (caseNumberLimit > 75) {
-            caseMaxLimitError().should('contain', 'Too long!');
+            inlineValidationError().should('contain', 'Too long!');
         } else {
-            caseMinLimitError().should('not.exist');
-            caseMaxLimitError().should('not.exist');
+            inlineValidationError().should('not.exist');
+            inlineValidationError().should('not.exist');
         }
         return this;
     }
