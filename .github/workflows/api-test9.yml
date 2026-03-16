@@ -1,0 +1,121 @@
+name: Cypress Sequential Tests - Folder 1
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose the environment'
+        required: true
+        default: 'pentest'
+        type: choice
+        options: [pentest, dev, qa, secure]
+      api_timeout:
+        description: 'Choose the API timeout'
+        required: true
+        default: '60000'
+        type: choice
+        options: [60000, 80000, 90000]
+      org_number:
+        description: 'Choose the Org'
+        required: true
+        type: choice
+        options: [1, 2, 3, 4]
+
+permissions: write-all
+
+env:
+  CYPRESS_PROJECT_ID: 9t2xr5
+
+jobs:
+  cypress-tests:
+    name: Cypress – ${{ matrix.spec_group }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - spec_group: api-load-test-spec
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Cypress tests
+        run: >
+          npx cypress run
+          --headless
+          --browser chrome
+          --record
+          --key 9f3a7951-174e-44ef-8b8c-d21426b05bef
+          --group "org-${{ matrix.spec_group }}"
+          --tag "spec:${{ matrix.spec_group }},env:${{ github.event.inputs.environment }},org:${{ github.event.inputs.org_number }}"
+          --ci-build-id "${{ github.run_id }}-${{ matrix.spec_group }}"
+          --spec "src/specs/kubernetes/${{ matrix.spec_group }}.js"
+          --env environment=${{ github.event.inputs.environment }},orgNum=${{ github.event.inputs.org_number }},apiTimeout=${{ github.event.inputs.api_timeout }},parallelJobNumber=9
+        env:
+          CI: true
+
+  slack-notification:
+    runs-on: ubuntu-latest
+    needs: [cypress-tests]
+    if: always() && !cancelled()
+
+    steps:
+      - name: Calculate total workflow duration
+        run: |
+          END_TIME=$(date +%s)
+          START_TIME=$(date -d "${{ github.run_started_at }}" +%s)
+          DURATION=$((END_TIME - START_TIME))
+
+          HOURS=$((DURATION / 3600))
+          MINUTES=$(((DURATION % 3600) / 60))
+          SECONDS=$((DURATION % 60))
+
+          if [ $HOURS -gt 0 ]; then
+            echo "TEST_DURATION=${HOURS}h ${MINUTES}m ${SECONDS}s" >> $GITHUB_ENV
+          else
+            echo "TEST_DURATION=${MINUTES}m ${SECONDS}s" >> $GITHUB_ENV
+          fi
+
+      # ✅ ALL TESTS PASSED
+      - name: Slack – All tests passed
+        if: needs.cypress-tests.result == 'success'
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: good
+          SLACK_TITLE: "✅ Cypress Tests Passed (${{ github.event.inputs.environment }})"
+          SLACK_MESSAGE: |
+            ✅ All Cypress tests in FOLDER 1 passed successfully
+
+            ⏱️ Total Duration: *${{ env.TEST_DURATION }}*
+
+            📊 Cypress Dashboard:
+            https://cloud.cypress.io/projects/${{ env.CYPRESS_PROJECT_ID }}/branches/${{ github.ref_name }}/runs
+          SLACK_USERNAME: Cypress_Tests
+          SLACK_SHOW_REF: false
+          SLACK_SHOW_EVENT: false
+
+      # ❌ SOME TESTS FAILED
+      - name: Slack – Tests failed
+        if: needs.cypress-tests.result != 'success'
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: danger
+          SLACK_TITLE: "❌ Cypress Tests Failed (${{ github.event.inputs.environment }})"
+          SLACK_MESSAGE: |
+            🚨 Some Cypress tests failed - FOLDER 1
+
+            ⏱️ Total Duration: *${{ env.TEST_DURATION }}*
+
+            📊 Cypress Dashboard:
+            https://cloud.cypress.io/projects/${{ env.CYPRESS_PROJECT_ID }}/branches/${{ github.ref_name }}/runs
+          SLACK_USERNAME: Cypress_Tests
+          SLACK_SHOW_REF: false
+          SLACK_SHOW_EVENT: false
