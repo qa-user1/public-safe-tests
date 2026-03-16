@@ -1,4 +1,4 @@
-name: API Parallel Test 6
+name: Cypress Sequential Tests - Folder 1
 
 on:
   workflow_dispatch:
