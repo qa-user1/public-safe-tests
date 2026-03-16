@@ -46,9 +46,9 @@ export default class WorkflowsPage extends BasePage {
     }
 
     select_user_or_group(userEmailOrGroupName) {
-        this.define_API_request_to_be_awaited('GET', 'multiselecttypeahead')
+       // this.define_API_request_to_be_awaited('GET', 'multiselecttypeahead')
         usersOrGroupsInput().type(userEmailOrGroupName);
-        this.wait_response_from_API_call('multiselecttypeahead')
+       // this.wait_response_from_API_call('multiselecttypeahead')
         userTypeahead().should('have.length', 1)
         userTypeahead().click();
         return this;

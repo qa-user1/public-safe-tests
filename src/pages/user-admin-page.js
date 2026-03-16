@@ -244,11 +244,11 @@ export default class UserAdminPage extends BasePage {
         login.enter_credentials(D.newUser.email, D.newUser.password)
             .click_Login_button()
 
-        // if (S.isOrg2() || S.isOrg3() || S.isOrg4()) {
-        //     cy.contains('END OF TERMS AND CONDITIONS').scrollIntoView()
-        //     cy.get('[title="Accept"]').click()
-        // }
-        // login.reload_page()
+        if (S.isOrg1()) {
+            cy.contains('END OF TERMS AND CONDITIONS').scrollIntoView()
+            cy.get('[title="Accept"]').click()
+        }
+        login.reload_page()
         login.verify_text_is_present_on_main_container(C.labels.dashboard.title)
         this.save_current_user_profile_to_local_storage()
     }

@@ -159,7 +159,7 @@ D.getNewCaseData = function (caseNumber, autoDispoOff = false) {
 
 D.getEditedCaseData = function (caseNumber, autoDispoOff = false) {
     // api.cases.get_most_recent_case();
-    caseNumber = caseNumber ? caseNumber + '_edited' : D.getRandomNo() + '_edited';
+    caseNumber = caseNumber ? caseNumber + '_edited' : this.setNewRandomNo() + '_edited';
 
     D.editedCase = Object.assign({}, D.editedCustomFormData, {
         caseNumber: caseNumber,

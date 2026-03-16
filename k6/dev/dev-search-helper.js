@@ -1,0 +1,1428 @@
+import http from 'k6/http';
+import {settings} from '../shared/settings.js';
+import {getHeaders} from '../shared/header-gen.js';
+import {caseSearchTime, itemSearchTime, personSearchTime, userSearchTime} from '../shared/trend-data.js';
+import {test} from 'k6/execution';
+
+export default {
+
+    searchCases(virutalUserIndex, token) {
+        let httpHeaders = getHeaders(token, settings.orgId, settings.officeId);
+        let httpBody = JSON.stringify(
+            {
+                "caseOfficers": [],
+                "tags": [],
+                "IsSearchingInSublocations": false,
+                "DynamicFields": [],
+                "StaticFields": [
+                    {
+                        "name": "GENERAL.CREATED_DATE",
+                        "typeId": 2,
+                        "fieldName": "CreatedDate",
+                        "searchCriteriasType": 2,
+                        "searchCriterias": [
+                            {
+                                "id": 6,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.BEFORE"
+                            },
+                            {
+                                "id": 7,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.AFTER"
+                            },
+                            {
+                                "id": 8,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.BETWEEN"
+                            },
+                            {
+                                "id": 13,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.EXACTLY"
+                            },
+                            {
+                                "id": 12,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.NEWER_THAN_X"
+                            },
+                            {
+                                "id": 11,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.OLDER_THAN_X"
+                            },
+                            {
+                                "id": 18,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.BETWEEN_X_AND_Y"
+                            },
+                            {
+                                "id": 19,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.CURRENT_WEEK"
+                            },
+                            {
+                                "id": 20,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.LAST_WEEK"
+                            },
+                            {
+                                "id": 21,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.MONTH_TO_DATE"
+                            },
+                            {
+                                "id": 22,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.LAST_MONTH"
+                            },
+                            {
+                                "id": 23,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.YEAR_TO_DATE"
+                            },
+                            {
+                                "id": 24,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.LAST_YEAR"
+                            }
+                        ],
+                        "searchCriteria": 12,
+                        "model": 300,
+                        "toDate": "2023-03-03T05:00:00.000Z"
+                    },
+                    {
+                        "name": "CASE_OFFICERS",
+                        "typeId": 5,
+                        "fieldName": "CaseOfficers",
+                        "searchCriteriasType": 7,
+                        "typeAheadTemplate": "<tp-multi-users-and-groups-typeahead field=\"field\" name=\"usersAndGroups\" selected-items=\"field.model\" search-inactive=\"true\"></tp-multi-users-and-groups-typeahead>",
+                        "searchCriterias": [
+                            {
+                                "id": 0,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS.OR"
+                            },
+                            {
+                                "id": 26,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS.AND"
+                            },
+                            {
+                                "id": 1,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.NOT_EQUALS"
+                            }
+                        ],
+                        "isCurrentUserSelected": false,
+                        "searchCriteria": 0,
+                        "model": {
+                            "items": []
+                        }
+                    },
+                    {
+                        "name": "NAV.TAGS",
+                        "typeId": 5,
+                        "fieldName": "Tags",
+                        "searchCriteriasType": 7,
+                        "typeAheadTemplate": "<tp-multi-tag-typeahead field=\"field\" tp-model=\"field.model\"></tp-multi-tag-typeahead>",
+                        "searchCriterias": [
+                            {
+                                "id": 0,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS.OR"
+                            },
+                            {
+                                "id": 26,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS.AND"
+                            },
+                            {
+                                "id": 1,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.NOT_EQUALS"
+                            }
+                        ],
+                        "searchCriteria": 0,
+                        "model": "tags"
+                    },
+                    {
+                        "name": "SEARCH.OFFICE_SELECTION",
+                        "typeId": 7,
+                        "fieldName": "OfficeSelection",
+                        "searchCriteriasType": 5,
+                        "dropdownEntities": {
+                            "entity": "offices"
+                        },
+                        "searchCriterias": [
+                            {
+                                "id": 0,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                            }
+                        ],
+                        "selectedOffices": [
+                            {
+                                "id": 11081,
+                                "name": "Web Test Automation #1 - Cypress Office 1",
+                                "selected": true
+                            },
+                        ],
+                        "model": [
+                            {
+                                "id": 1,
+                                "name": "Tracker Products - Office Ukr Testing",
+                                "selected": true
+                            }
+                        ],
+                        "searchCriteria": 0
+                    }
+                ],
+                "officeIds": [
+                    11081
+                ],
+                "orderBy": "Active",
+                "orderByAsc": false,
+                "thenOrderBy": "",
+                "thenOrderByAsc": false,
+                "PageSize": 25,
+                "peopleIds": [],
+                "PageNumber": 1,
+                "clientDate": "2023-03-03T15:27:15.060Z",
+                "clientTz": "America/New_York",
+                "timezoneOffset": 300,
+                "SavedSearchEntities": [
+                    {
+                        "name": "SEARCH.SAVED_SEARCH.ITEMS",
+                        "typeId": 3,
+                        "fieldName": "SavedSearchId_items",
+                        "searchCriteriasType": 5,
+                        "dropdownEntities": {
+                            "entity": "SavedSearches",
+                            "options": {
+                                "model": "items"
+                            }
+                        },
+                        "searchCriterias": [
+                            {
+                                "id": 0,
+                                "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                            }
+                        ],
+                        "dropdownValues": [
+                            {
+                                "id": null,
+                                "name": "Select all"
+                            }
+                        ],
+                        "searchCriteria": 0
+                    }
+                ]
+            }
+        );
+
+        var response = http.post(`${settings.baseUrl}/api/cases/search`, httpBody, {headers: httpHeaders});
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`Cases Search - cases found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+            caseSearchTime.add(response.timings.duration);
+        } else {
+            console.log(`ERROR searching cases `);
+        }
+    },
+
+    searchItems(virutalUserIndex, token) {
+
+        let httpHeaders = getHeaders(token, settings.orgId, settings.officeId);
+        let httpBody = JSON.stringify({
+            "caseOfficers": [],
+            "tags": [],
+            "IsSearchingInSublocations": false,
+            "DynamicFields": [],
+            "StaticFields": [
+                {
+                    "name": "NAV.TAGS",
+                    "typeId": 5,
+                    "fieldName": "Tags",
+                    "searchCriteriasType": 7,
+                    "typeAheadTemplate": "<tp-multi-tag-typeahead field=\"field\" tp-model=\"field.model\"></tp-multi-tag-typeahead>",
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS.OR"
+                        },
+                        {
+                            "id": 26,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS.AND"
+                        },
+                        {
+                            "id": 1,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.NOT_EQUALS"
+                        }
+                    ],
+                    "searchCriteria": 0,
+                    "model": "tags"
+                },
+                {
+                    "name": "SEARCH.OFFICE_SELECTION",
+                    "typeId": 7,
+                    "fieldName": "OfficeSelection",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "offices"
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "selectedOffices": [
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation #1 - Cypress Office 1",
+                            "selected": true
+                        },
+                    ],
+                    "model": [
+                        {
+                            "id": 1,
+                            "name": "Tracker Products - Office Ukr Testing",
+                            "selected": true
+                        }
+                    ],
+                    "searchCriteria": 0
+                }
+            ],
+            "officeIds": [
+                11081
+            ],
+            "orderBy": "CurrentOfficeName",
+            "orderByAsc": true,
+            "thenOrderBy": "",
+            "thenOrderByAsc": false,
+            "PageSize": 10,
+            "peopleIds": [],
+            "PageNumber": 1,
+            "clientDate": "2023-03-09T13:05:54.416Z",
+            "clientTz": "America/New_York",
+            "timezoneOffset": 300,
+            "SavedSearchEntities": [
+                {
+                    "name": "SEARCH.SAVED_SEARCH.CASES",
+                    "typeId": 3,
+                    "fieldName": "SavedSearchId_cases",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "SavedSearches",
+                        "options": {
+                            "model": "cases"
+                        }
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "dropdownValues": [
+                        {
+                            "id": null,
+                            "name": "Select all"
+                        }
+                    ],
+                    "searchCriteria": 0
+                },
+                {
+                    "name": "SEARCH.SAVED_SEARCH.DISPOSALS",
+                    "typeId": 3,
+                    "fieldName": "SavedSearchId_disposals",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "SavedSearches",
+                        "options": {
+                            "model": "disposals"
+                        }
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "dropdownValues": [
+                        {
+                            "id": null,
+                            "name": "Select all"
+                        }
+                    ],
+                    "searchCriteria": 0
+                },
+                {
+                    "name": "SEARCH.SAVED_SEARCH.CHECKINS",
+                    "typeId": 3,
+                    "fieldName": "SavedSearchId_checkins",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "SavedSearches",
+                        "options": {
+                            "model": "checkins"
+                        }
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "dropdownValues": [
+                        {
+                            "id": null,
+                            "name": "Select all"
+                        }
+                    ],
+                    "searchCriteria": 0
+                },
+                {
+                    "name": "SEARCH.SAVED_SEARCH.CHECKOUTS",
+                    "typeId": 3,
+                    "fieldName": "SavedSearchId_checkouts",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "SavedSearches",
+                        "options": {
+                            "model": "checkouts"
+                        }
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "dropdownValues": [
+                        {
+                            "id": null,
+                            "name": "Select all"
+                        }
+                    ],
+                    "searchCriteria": 0
+                },
+                {
+                    "name": "SEARCH.SAVED_SEARCH.MOVES",
+                    "typeId": 3,
+                    "fieldName": "SavedSearchId_moves",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "SavedSearches",
+                        "options": {
+                            "model": "moves"
+                        }
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "dropdownValues": [
+                        {
+                            "id": null,
+                            "name": "Select all"
+                        }
+                    ],
+                    "searchCriteria": 0
+                },
+                {
+                    "name": "SEARCH.SAVED_SEARCH.TRANSFERS",
+                    "typeId": 3,
+                    "fieldName": "SavedSearchId_transfers",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "SavedSearches",
+                        "options": {
+                            "model": "transfers"
+                        }
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "dropdownValues": [
+                        {
+                            "id": null,
+                            "name": "Select all"
+                        }
+                    ],
+                    "searchCriteria": 0
+                }
+            ]
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/items/search`, httpBody, {headers: httpHeaders});
+
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`Items Search - items found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+            itemSearchTime.add(response.timings.duration);
+        } else {
+            console.log(`ERROR searching items ` + JSON.stringify(response.body));
+        }
+    },
+
+
+    searchPeople(virutalUserIndex, token) {
+
+        let httpHeaders = getHeaders(token, settings.orgId, settings.officeId);
+        let httpBody = JSON.stringify({
+            "caseOfficers": [],
+            "tags": [],
+            "IsSearchingInSublocations": false,
+            "DynamicFields": [],
+            "StaticFields": [
+                {
+                    "name": "GENERAL.RACE",
+                    "typeId": 3,
+                    "fieldName": "RaceId",
+                    "searchCriteriasType": 1,
+                    "dropdownEntities": {
+                        "entity": "races"
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        },
+                        {
+                            "id": 1,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.NOT_EQUALS"
+                        }
+                    ],
+                    "dropdownValues": [
+                        {
+                            "id": null,
+                            "name": "Select all"
+                        },
+                        {
+                            "id": 2,
+                            "name": "African American or Black"
+                        },
+                        {
+                            "id": 3,
+                            "name": "American Indian or Alaska Native"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Asian"
+                        },
+                        {
+                            "id": 7,
+                            "name": "Hispanic"
+                        },
+                        {
+                            "id": 8,
+                            "name": "Middle Eastern"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Native Hawaiian or Other Pacific Islander"
+                        },
+                        {
+                            "id": 9,
+                            "name": "Other"
+                        },
+                        {
+                            "id": 1,
+                            "name": "Unknown"
+                        },
+                        {
+                            "id": 6,
+                            "name": "White / Caucasian"
+                        }
+                    ],
+                    "searchCriteria": 0,
+                    "model": 2
+                }
+            ],
+            "officeIds": [],
+            "orderBy": "BusinessName",
+            "orderByAsc": false,
+            "thenOrderBy": "",
+            "thenOrderByAsc": false,
+            "PageSize": 25,
+            "peopleIds": [],
+            "PageNumber": 1,
+            "clientDate": "2023-03-10T14:54:49.277Z",
+            "clientTz": "America/New_York",
+            "timezoneOffset": 300,
+            "SavedSearchEntities": []
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/people/search`, httpBody, {headers: httpHeaders});
+
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`people Search - people found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+            personSearchTime.add(response.timings.duration);
+        } else {
+            console.log(`ERROR searching people `);
+        }
+    },
+
+    searchUsers(virutalUserIndex, token) {
+        let httpHeaders = getHeaders(token, settings.orgId, settings.officeId);
+        let httpBody = JSON.stringify({
+            "page": 0,
+            "count": 100,
+            "searchString": "qa+21926803696",
+            "orderBy": "Id",
+            "orderByAsc": false,
+            "officeId": 0,
+            "divisionId": 0,
+            "unitId": 0,
+            "onlyActiveUsers": true
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/users/search`, httpBody, {headers: httpHeaders});
+
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`User Search - users found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+            userSearchTime.add(response.timings.duration);
+        } else {
+            console.log(`ERROR searching users `);
+            test.abort();
+        }
+    },
+
+
+    searchCheckIns(virutalUserIndex, token) {
+        let currentDateTime = new Date().toDateString() + ' - ' + new Date().toLocaleTimeString();
+        let httpHeaders = getHeaders(token, 557, 11081);
+
+        let httpBody = JSON.stringify({
+            "tags": [],
+            "IsSearchingInSublocations": false,
+            "DynamicFields": [],
+            "StaticFields": [
+                {
+                    "name": "ITEMS.CHECK_IN.CHECK_IN_DATE",
+                    "typeId": 2,
+                    "fieldName": "Date",
+                    "searchCriteriasType": 2,
+                    "searchCriterias": [],
+                    "searchCriteria": 22,
+                    "model": null,
+                    "toDate": null
+                },
+                {
+                    "name": "SEARCH.OFFICE_SELECTION",
+                    "typeId": 7,
+                    "fieldName": "OfficeSelection",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "offices"
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "selectedOffices": [
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation #1 - Cypress Office 1",
+                            "selected": true
+                        },
+                    ],
+                    "searchCriteria": 0
+                }
+            ],
+            "officeIds": [
+                11081
+            ],
+            "orderBy": "Date",
+            "orderByAsc": false,
+            "thenOrderBy": "",
+            "thenOrderByAsc": false,
+            "PageSize": 100,
+            "peopleIds": [],
+            "PageNumber": 1,
+            "clientDate": "2021-06-14T16:07:32.083Z",
+            "clientTz": "America/New_York",
+            "timezoneOffset": 240,
+            "SavedSearchEntities": []
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/checkins/search`, httpBody, {headers: httpHeaders});
+
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`Check Ins Search - check ins found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+        } else {
+            console.log(`ERROR searching check ins `);
+        }
+    },
+
+    searchCheckOuts(virutalUserIndex, token) {
+        let currentDateTime = new Date().toDateString() + ' - ' + new Date().toLocaleTimeString();
+        let httpHeaders = getHeaders(token, 557, 11081);
+
+        let httpBody = JSON.stringify({
+            "tags": [],
+            "IsSearchingInSublocations": false,
+            "DynamicFields": [],
+            "StaticFields": [
+                {
+                    "name": "SEARCH.OFFICE_SELECTION",
+                    "typeId": 7,
+                    "fieldName": "OfficeSelection",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "offices"
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "selectedOffices": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "model": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "searchCriteria": 0
+                }
+            ],
+            "officeIds": [
+                11081
+            ],
+            "orderBy": "Date",
+            "orderByAsc": false,
+            "thenOrderBy": "",
+            "thenOrderByAsc": false,
+            "PageSize": 100,
+            "peopleIds": [],
+            "PageNumber": 1,
+            "clientDate": "2021-06-14T19:29:36.701Z",
+            "clientTz": "America/New_York",
+            "timezoneOffset": 240,
+            "SavedSearchEntities": []
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/checkouts/search`, httpBody, {headers: httpHeaders});
+
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`Check Out Search - check outs found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+        } else {
+            console.log(`ERROR searching check outs `);
+        }
+    },
+
+    searchDisposals(virutalUserIndex, token) {
+        let currentDateTime = new Date().toDateString() + ' - ' + new Date().toLocaleTimeString();
+        let httpHeaders = getHeaders(token, 557, 11081);
+
+        let httpBody = JSON.stringify({
+            "tags": [],
+            "IsSearchingInSublocations": false,
+            "DynamicFields": [],
+            "StaticFields": [
+                {
+                    "name": "SEARCH.OFFICE_SELECTION",
+                    "typeId": 7,
+                    "fieldName": "OfficeSelection",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "offices"
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "selectedOffices": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "model": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "searchCriteria": 0
+                }
+            ],
+            "officeIds": [
+                11081
+            ],
+            "orderBy": "Date",
+            "orderByAsc": false,
+            "thenOrderBy": "",
+            "thenOrderByAsc": false,
+            "PageSize": 100,
+            "peopleIds": [],
+            "PageNumber": 1,
+            "clientDate": "2021-06-14T16:03:53.548Z",
+            "clientTz": "America/New_York",
+            "timezoneOffset": 240,
+            "SavedSearchEntities": []
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/disposals/search`, httpBody, {headers: httpHeaders});
+
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`Disposals Search - dispoosals found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+        } else {
+            console.log(`ERROR searching usedisposals `);
+        }
+    },
+
+    searchMoves(virutalUserIndex, token) {
+        let currentDateTime = new Date().toDateString() + ' - ' + new Date().toLocaleTimeString();
+        let httpHeaders = getHeaders(token, 557, 11081);
+        /* #region Search Body */
+        let httpBody = JSON.stringify({
+            "tags": [],
+            "IsSearchingInSublocations": false,
+            "DynamicFields": [],
+            "StaticFields": [
+                {
+                    "name": "SEARCH.OFFICE_SELECTION",
+                    "typeId": 7,
+                    "fieldName": "OfficeSelection",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "offices"
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "selectedOffices": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "model": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "searchCriteria": 0
+                }
+            ],
+            "officeIds": [
+                11081
+            ],
+            "orderBy": "Date",
+            "orderByAsc": false,
+            "thenOrderBy": "",
+            "thenOrderByAsc": false,
+            "PageSize": 100,
+            "peopleIds": [],
+            "PageNumber": 1,
+            "clientDate": "2021-06-14T15:59:00.514Z",
+            "clientTz": "America/New_York",
+            "timezoneOffset": 240,
+            "SavedSearchEntities": []
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/moves/search`, httpBody, {headers: httpHeaders});
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`Moves Search - moves found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+        } else {
+            console.log(`ERROR searching moves `);
+        }
+    },
+
+    searchTransfers(virutalUserIndex, token) {
+        let currentDateTime = new Date().toDateString() + ' - ' + new Date().toLocaleTimeString();
+        let httpHeaders = getHeaders(token, 557, 11081);
+
+        let httpBody = JSON.stringify({
+            "tags": [],
+            "IsSearchingInSublocations": false,
+            "DynamicFields": [],
+            "StaticFields": [
+                {
+                    "name": "SEARCH.OFFICE_SELECTION",
+                    "typeId": 7,
+                    "fieldName": "OfficeSelection",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "offices"
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "selectedOffices": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "model": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "searchCriteria": 0
+                }
+            ],
+            "officeIds": [
+                11081
+            ],
+            "orderBy": "Date",
+            "orderByAsc": false,
+            "thenOrderBy": "",
+            "thenOrderByAsc": false,
+            "PageSize": 25,
+            "peopleIds": [],
+            "PageNumber": 1,
+            "clientDate": "2021-06-14T16:03:53.548Z",
+            "clientTz": "America/New_York",
+            "timezoneOffset": 240,
+            "SavedSearchEntities": []
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/transfers/search`, httpBody, {headers: httpHeaders});
+
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`Transfers Search - transfers found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+        } else {
+            console.log(`ERROR searching transfers `);
+        }
+    },
+
+    searchNotes(virutalUserIndex, token) {
+        let currentDateTime = new Date().toDateString() + ' - ' + new Date().toLocaleTimeString();
+        let httpHeaders = getHeaders(token, 557, 11081);
+
+        let httpBody = JSON.stringify({
+            "tags": [],
+            "IsSearchingInSublocations": false,
+            "DynamicFields": [],
+            "StaticFields": [
+                {
+                    "name": "NOTES.CATEGORY",
+                    "typeId": 3,
+                    "fieldName": "NoteCategoryId",
+                    "searchCriteriasType": 1,
+                    "dropdownEntities": {
+                        "entity": "notecategories",
+                        "options": {
+                            "belongToOrganization": true
+                        }
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        },
+                        {
+                            "id": 1,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.NOT_EQUALS"
+                        }
+                    ],
+                    "dropdownValues": [
+                        {
+                            "id": null,
+                            "name": "Select all"
+                        },
+                        {
+                            "id": 27,
+                            "name": "Invalid"
+                        },
+                        {
+                            "id": 1,
+                            "name": "Miscellaneous"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Sensitive"
+                        }
+                    ],
+                    "searchCriteria": 0,
+                    "model": 2
+                },
+                {
+                    "name": "SEARCH.OFFICE_SELECTION",
+                    "typeId": 7,
+                    "fieldName": "OfficeSelection",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "offices"
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "selectedOffices": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "model": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "searchCriteria": 0
+                }
+            ],
+            "officeIds": [
+                11081
+            ],
+            "orderBy": "Date",
+            "orderByAsc": false,
+            "thenOrderBy": "",
+            "thenOrderByAsc": false,
+            "PageSize": 50,
+            "peopleIds": [],
+            "PageNumber": 1,
+            "clientDate": "2021-06-14T18:40:53.199Z",
+            "clientTz": "America/New_York",
+            "timezoneOffset": 240,
+            "SavedSearchEntities": []
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/notes/search`, httpBody, {headers: httpHeaders});
+
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`Notes Search - notes found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+        } else {
+            console.log(`ERROR searching notes `);
+        }
+    },
+
+    searchTasks(virutalUserIndex, token) {
+        let currentDateTime = new Date().toDateString() + ' - ' + new Date().toLocaleTimeString();
+        let httpHeaders = getHeaders(token, 557, 11081);
+
+        let httpBody = JSON.stringify({
+            "tags": [],
+            "IsSearchingInSublocations": false,
+            "DynamicFields": [],
+            "StaticFields": [
+                {
+                    "name": "TASKS.CREATION_DATE",
+                    "typeId": 2,
+                    "fieldName": "DateCreated",
+                    "searchCriteriasType": 2,
+                    "searchCriterias": [],
+                    "searchCriteria": 8,
+                    "toDate": "2021-06-07T04:00:00.000Z",
+                    "model": "2021-04-28T04:00:00.000Z"
+                },
+                {
+                    "name": "SEARCH.OFFICE_SELECTION",
+                    "typeId": 7,
+                    "fieldName": "OfficeSelection",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "offices"
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "selectedOffices": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "model": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "searchCriteria": 0
+                },
+                {
+                    "name": "SEARCH.ASSIGN_TO_USERS",
+                    "typeId": 5,
+                    "fieldName": "Users",
+                    "searchCriteriasType": 1,
+                    "typeAheadTemplate": "<tp-multi-user-typeahead field=\"field\" selected-users=\"field.model\"  search-inactive=\"true\"></tp-multi-user-typeahead>",
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        },
+                        {
+                            "id": 1,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.NOT_EQUALS"
+                        }
+                    ],
+                    "searchCriteria": 0,
+                    "model": {
+                        "users": []
+                    }
+                },
+                {
+                    "name": "SEARCH.ASSIGN_TO_USER_GROUPS",
+                    "typeId": 5,
+                    "fieldName": "UserGroups",
+                    "searchCriteriasType": 1,
+                    "typeAheadTemplate": "<tp-user-groups-typeahead field=\"field\" selected-user-groups=\"field.model\"></tp-user-groups-typeahead>",
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        },
+                        {
+                            "id": 1,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.NOT_EQUALS"
+                        }
+                    ],
+                    "searchCriteria": 0,
+                    "model": {
+                        "userGroups": []
+                    }
+                }
+            ],
+            "officeIds": [
+                11081
+            ],
+            "orderBy": "DateCreated",
+            "orderByAsc": false,
+            "thenOrderBy": "",
+            "thenOrderByAsc": false,
+            "PageSize": 50,
+            "peopleIds": [],
+            "PageNumber": 1,
+            "clientDate": "2021-06-14T18:43:41.550Z",
+            "clientTz": "America/New_York",
+            "timezoneOffset": 240,
+            "SavedSearchEntities": []
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/tasks/search`, httpBody, {headers: httpHeaders});
+
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`Tasks Search - tasks found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+        } else {
+            console.log(`ERROR searching tasks `);
+        }
+    },
+
+    searchMedia(virutalUserIndex, token) {
+        let currentDateTime = new Date().toDateString() + ' - ' + new Date().toLocaleTimeString();
+        let httpHeaders = getHeaders(token, 557, 11081);
+
+        let httpBody = JSON.stringify({
+            "tags": [],
+            "IsSearchingInSublocations": false,
+            "DynamicFields": [],
+            "StaticFields": [
+                {
+                    "name": "SEARCH.OFFICE_SELECTION",
+                    "typeId": 7,
+                    "fieldName": "OfficeSelection",
+                    "searchCriteriasType": 5,
+                    "dropdownEntities": {
+                        "entity": "offices"
+                    },
+                    "searchCriterias": [
+                        {
+                            "id": 0,
+                            "name": "TP_SEARCH.SEARCH_CRITERIA.EQUALS"
+                        }
+                    ],
+                    "selectedOffices": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "model": [
+                        {
+                            "id": 1027,
+                            "name": "Web Test Automation - Cypress Office 1",
+                            "selected": true
+                        },
+                        {
+                            "id": 1032,
+                            "name": "Web Test Automation - Cypress Office 2",
+                            "selected": true
+                        },
+                        {
+                            "id": 11081,
+                            "name": "Web Test Automation - fsfsdf",
+                            "selected": true
+                        }
+                    ],
+                    "searchCriteria": 0
+                }
+            ],
+            "officeIds": [
+                11081
+            ],
+            "orderBy": "Search.uploadUserName",
+            "orderByAsc": true,
+            "thenOrderBy": "",
+            "thenOrderByAsc": false,
+            "PageSize": 100,
+            "peopleIds": [],
+            "PageNumber": 1,
+            "clientDate": "2021-06-14T18:48:31.059Z",
+            "clientTz": "America/New_York",
+            "timezoneOffset": 240,
+            "SavedSearchEntities": []
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/media/search`, httpBody, {headers: httpHeaders});
+
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`Media Search - media found : ${searchResults.count}, response time(ms): ${response.timings.duration}`);
+        } else {
+            console.log(`ERROR searching media `);
+        }
+    },
+
+    searchItemsByBarcode(virutalUserIndex, token) {
+        let currentDateTime = new Date().toDateString() + ' - ' + new Date().toLocaleTimeString();
+        let httpHeaders = getHeaders(token, 557, 11081);
+
+        let httpBody = JSON.stringify({
+            "scannedValues": [
+                "9212eb9c-1c17-4680-a651-724c2e49c32d",
+                "e929d97a-0dde-4d36-9964-de222f7b99a4",
+                "2bf27894-cf76-422f-a643-2e30fb9daf2e",
+                "d92a6923-742c-400f-a8e5-be17dfd34c03",
+                "30fd4964-d17b-4fe7-adcf-6d84cbdfeab0",
+                "7ae81df9-2b6a-410c-9881-f4eaa1c6a562",
+                "f8f8e28e-73a5-433a-b298-9e5f8ac3f1c9",
+                "94f779f2-c080-4008-9ae0-8b3c6b9c6ce8",
+                "6c32f83e-9ae6-4947-bb63-2df288b8e499",
+                "7ca7dabb-c4d2-43fc-ba36-2176b9ec8528",
+                "6a0e6018-043e-47bd-a9b1-ddbbc9394e9f",
+                "60c0e0e0-1577-485a-b8ef-8b2a12781bbb",
+                "862ffe37-fca6-4c1d-b33f-c91eea564433",
+                "af19d679-2b29-4fd8-9313-83cc93af2473",
+                "08c57139-92b2-464d-9f3d-bb44ffa7af4b",
+                "d34aca42-8de6-4cf2-9092-554a1b71ba05",
+                "b94bfadd-62b7-4e5c-98f0-a49bf294e0af",
+                "45fca0be-53d5-4fda-8399-c186a677d00a",
+                "60cc7cbf-da60-49d3-8bf1-e92b8b656a14",
+                "ab72d5c7-f8a4-4f93-9063-8b5533bef682",
+                "3a02b20d-493a-49ca-90b7-1990baf70ebd",
+                "d2ad3d0d-c419-4722-b165-45425c7a73df",
+                "fc91c6fe-4928-4900-8a76-c9701e984aa4",
+                "15e4953e-f2e5-46d0-a19f-a7ab5aa378d0",
+                "fdaf9a85-6367-4410-a295-a27d0de37438",
+                "089e8909-0611-410d-8b21-171ac3376029",
+                "1411477a-e25f-49c7-a4aa-054a5a51010a",
+                "5a14e044-e370-485a-b5c3-da3f1da203d6",
+                "26c73f67-304d-4830-9da9-a8bdc2d785ee",
+                "40d5f002-260e-4a34-a65c-0d5450140e67",
+                "1a2eaf80-187f-4073-86f7-61ffa17e9da0",
+                "063ca13f-67c0-476c-a599-eaf4da82caee",
+                "315aab5b-bee7-433d-8117-83e2da07625f",
+                "6394370c-2756-4240-83c2-9b281846a503",
+                "d84725cf-8da0-49d4-a8e4-6e28e0dc3920",
+                "3d276d81-9663-41ec-acd9-4c64599b5907",
+                "7c5813f8-ecd6-4a01-9766-f2845b6b5e42",
+                "f822b7fc-b0d4-4c25-848e-ae2425e6cea8",
+                "81e86364-615f-4cb5-b7b3-74e59fd8af6b",
+                "2d2e38b0-6dfa-476f-99e0-d87fb433433a",
+                "92fbcc90-f1bb-4881-9c15-618aa7c2d75b",
+                "9654428b-3a07-4687-bfdc-23471916723f",
+                "3f68d3f7-32d3-44f6-a5ba-06ad30b7bbb6",
+                "715464d6-8b53-4a3c-9b44-73e33ddad36f",
+                "274a45a8-1610-4bb0-ae78-d3007f0179d8",
+                "283fe0a5-4342-41c2-87fe-99ec1ae33b34",
+                "d8fd41d8-a299-4ae5-8b95-e75aa4a3bcc4",
+                "af9f3bf0-e867-425b-96f5-12ea780166dc",
+                "d3485558-23e4-44c1-ac0d-7b0ef003583f",
+                "113b6142-8ccf-40cc-976f-407ae51fe582",
+                "4a48bd10-e635-44a1-8579-3b89bdd2daa0",
+                "34bf3090-03d8-4c37-9482-de5c9f2d1f25",
+                "12391d90-d249-4d14-9435-8d2f46d943f7",
+                "34ff88ac-36d7-46d1-8143-b63fd5347983",
+                "ca1ed3f4-04d4-4a90-b2d0-00fc86cf0dc9",
+                "c93b7cf0-1bff-40c3-9093-7c05cd246c19",
+                "6f84137e-37cd-437e-8c4f-ad842638ff87",
+                "065579ed-325c-4cd5-bff7-526f040e6c7f",
+                "32ec2b12-50d1-44aa-9868-e2d50b194257",
+                "a66ecc41-1c95-4389-9a31-a197a5b7d494",
+                "56667481-51a5-4ab4-a9e6-305a9f490596"
+            ],
+            "isSystemScan": false
+        });
+
+        var response = http.post(`${settings.baseUrl}/api/items/barcodes`, httpBody, {headers: httpHeaders});
+
+        if (response.status === 200) {
+            var searchResults = JSON.parse(response.body);
+            console.log(`Items by Barcode Search - barcode items found , response time(ms): ${response.timings.duration}`);
+        } else {
+            console.log(`ERROR searching items by barcode `);
+        }
+
+    }
+
+}
+

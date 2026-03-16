@@ -1,0 +1,8 @@
+import Searches from '../helpers/secure/secure-search-helper.js';
+
+export function itemSearch (virtualUserIndex, token) {
+    
+    // Search Items
+    var resultItems = Searches.searchItems(virtualUserIndex, token);
+
+}

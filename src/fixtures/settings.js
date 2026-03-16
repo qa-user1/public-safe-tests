@@ -11,7 +11,7 @@ S.enableApiLogs = Cypress.env('enableApiLogs') || false
 S.api_timeout = Cypress.env('apiTimeout') || 95000
 
 // options: LightRegression, FullRegression
-S.testSuite = Cypress.env('testSuite') || 'FullRegression'
+S.testSuite = Cypress.env('parallelJobNumber') || 'FullRegression'
 
 S.isFullRegression = function () {
     return S.testSuite === 'FullRegression'

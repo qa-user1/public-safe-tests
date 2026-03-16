@@ -1,0 +1,23 @@
+import { Trend } from 'k6/metrics';
+
+export let caseSearchTime = new Trend('x_case_search_time');
+export let itemSearchTime = new Trend('x_item_search_time');
+export let caseViewTime = new Trend('x_case_view_time');
+export let itemViewTime = new Trend('x_item_view_time');
+export let personViewTime = new Trend('x_person_view_time');
+export let personSearchTime = new Trend('x_person_search_time');
+export let loginTime = new Trend('x_login_time');
+export let peopleSearchTime = new Trend('x_people_search_time');
+export let userSearchTime = new Trend('x_user_search_time');
+export let checkInSearchTime = new Trend('x_checkIn_search_time');
+export let checkOutSearchTime = new Trend('x_checkOut_search_time');
+export let disposalSearchTime = new Trend('x_disposal_search_time');
+export let moveSearchTime = new Trend('x_move_search_time');
+export let mediaSearchTime = new Trend('x_media_search_time');
+export let noteSearchTime = new Trend('x_note_search_time');
+export let taskSearchTime = new Trend('x_task_search_time');
+export let getItemsByBarcodeTime = new Trend('x_get_items_barcode_time');
+export let getDashboardSearchTime = new Trend('x_get_dashboard_time');
+export let createLocationTime = new Trend('x_create_location_time');
+export let findLocationTime = new Trend('x_find_location_time');
+export let updateLocationTime = new Trend('x_update_location_time');

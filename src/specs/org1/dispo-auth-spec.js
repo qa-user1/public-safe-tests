@@ -11,11 +11,11 @@ let approvedForReleaseItem4 = {}
 
 for (let i = 0; i < 1; i++) {
     // enable this block if you want to generate large number of Release letters. This is not needed for regression as we have that covered in tests below
-    xdescribe('Generating X number of release letters ', function () {
+    describe.only('Generating X number of release letters ', function () {
         for (let i = 0; i < 1; i++) {
             let caseData
             let itemData
-            let numberOfRecords = 200;
+            let numberOfRecords = 1000;
 
             it('Add Dispo Task with ' + numberOfRecords + ' items to trigger Dispo Auth Service and generation of letters for all', function () {
 
@@ -49,8 +49,10 @@ for (let i = 0; i < 1; i++) {
                 ui.taskView
                     .open_newly_created_task_via_direct_link()
                     .select_tab('Items')
+                    .pause(5)
                     .set_large_view()
-                    .set_Action___Approve_for_Release([1, 200], person1, address1, true, true, false, false)
+                    .pause(5)
+                    .set_Action___Approve_for_Release([1, 1000], person1, address1, true, true, false, false)
                     //  .set_Action___Approve_for_Release([1, 100], person2, null, false, false)
                     .click_Submit_for_Disposition()
                     .verify_toast_message('Processing...')

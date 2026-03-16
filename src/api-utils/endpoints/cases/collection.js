@@ -11,10 +11,9 @@ exports.add_new_case = function (caseNumber, caseObject, stringToStoreInLocalSto
         'Creating new case via API with ID_______',
         stringToStoreInLocalStorage,
     );
-    exports.get_most_recent_case();
+      exports.get_most_recent_case();
     return this;
 };
-
 
 
 exports.add_custom_form_data_to_existing_case = function (caseObject) {
@@ -30,9 +29,9 @@ exports.add_custom_form_data_to_existing_case = function (caseObject) {
     return this;
 };
 
-exports.edit_newly_added_case = function (withCustomFormData = true ) {
-    cy.getLocalStorage("newCase").then(newCase => {
-        let caseObject = Object.assign(JSON.parse(newCase), D.editedCase);
+exports.edit_newly_added_case = function (withCustomFormData = true, caseFromLocalStorage = 'newCase') {
+    cy.getLocalStorage(caseFromLocalStorage).then(newCase => {
+        let caseObject = Object.assign(JSON.parse(newCase), D.getEditedCaseData());
         caseObject.tags = D.editedCase.tagsForApi
         caseObject.closedDate = D.editedCase.closedDateIsoFormat
 
@@ -84,11 +83,11 @@ exports.get_old_case_data = function (oldClosedCaseId) {
 };
 
 exports.quick_case_search = function (caseNumber) {
-        generic_request.GET(
-            '/api/cases/typeahead?allOffices=true&hideOverlay=true&search=' + caseNumber,
-            'Getting the current case data via API',
-            'currentCase')
-  //  });
+    generic_request.GET(
+        '/api/cases/typeahead?allOffices=true&hideOverlay=true&search=' + caseNumber,
+        'Getting the current case data via API',
+        'currentCase')
+    //  });
 };
 
 exports.fetch_updated_data_for_new_case = function () {
