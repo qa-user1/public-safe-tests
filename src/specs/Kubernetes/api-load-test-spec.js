@@ -1651,7 +1651,7 @@ describe('Services', function () {
         // }
     });
 
-    it.only('VERIFICATIONS Service', function () {
+    it('VERIFICATIONS Service', function () {
 
         // DEV---> Web Test Automation #1 -
         for (let i = 0; i < 1; i++) {
@@ -1878,7 +1878,7 @@ describe('Services', function () {
 
     })
 
-    it('Disposal transactions (start this test after starting some action that causes a CPU spike and heavy load on SQL Server,' +
+    it.only('Disposal transactions (start this test after starting some action that causes a CPU spike and heavy load on SQL Server,' +
         'e.g. moving 100+ locations)', function () {
         api.auth.get_tokens_without_page_load(orgAdmin);
         for (let i = 0; i < 10; i++) {
