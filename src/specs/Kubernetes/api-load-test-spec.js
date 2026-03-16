@@ -1878,8 +1878,7 @@ describe('Services', function () {
 
     })
 
-    it.only('Disposal transactions (start this test after starting some action that causes a CPU spike and heavy load on SQL Server,' +
-        'e.g. moving 100+ locations)', function () {
+    it.only('Disposal transactions ', function () {
         api.auth.get_tokens_without_page_load(orgAdmin);
         for (let i = 0; i < 10; i++) {
             api.items.add_new_item(true, null, 'newItem' + i)
@@ -1892,8 +1891,7 @@ describe('Services', function () {
         }
     })
     for (let i = 0; i < 1000; i++) {
-        it.only('Disposal transactions (start this test after starting some action that causes a CPU spike and heavy load on SQL Server,' +
-            'e.g. moving 100+ locations)', function () {
+        it.only('Disposal transactions _____BATCH #' + i, function () {
 
             // ORG: "Biggest Disposal Count'
             if (Cypress.env('parallelJobNumber') === 1) {
