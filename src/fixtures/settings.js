@@ -11,10 +11,10 @@ S.enableApiLogs = Cypress.env('enableApiLogs') || false
 S.api_timeout = Cypress.env('apiTimeout') || 95000
 
 // options: LightRegression, FullRegression
-S.testSuite = Cypress.env('parallelJobNumber') || 'FullRegression'
+S.parallelJobNumber = Cypress.env('parallelJobNumber') || 'FullRegression'
 
 S.isFullRegression = function () {
-    return S.testSuite === 'FullRegression'
+    return S.parallelJobNumber === 'FullRegression'
 }
 
 S.currentDateAndTime = helper.getCurrentDateInCurrentFormat(C.currentDateTimeFormat);

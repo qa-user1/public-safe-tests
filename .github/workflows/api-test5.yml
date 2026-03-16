@@ -56,7 +56,7 @@ jobs:
           --tag "spec:${{ matrix.spec_group }},env:${{ github.event.inputs.environment }},org:${{ github.event.inputs.org_number }}"
           --ci-build-id "${{ github.run_id }}-${{ matrix.spec_group }}"
           --spec "src/specs/kubernetes/${{ matrix.spec_group }}.js"
-          --env environment=${{ github.event.inputs.environment }},orgNum=${{ github.event.inputs.org_number }},apiTimeout=${{ github.event.inputs.api_timeout }},testSuite=5
+          --env environment=${{ github.event.inputs.environment }},orgNum=${{ github.event.inputs.org_number }},apiTimeout=${{ github.event.inputs.api_timeout }},parallelJobNumber=5
         env:
           CI: true
 
