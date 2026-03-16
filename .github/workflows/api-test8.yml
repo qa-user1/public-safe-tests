@@ -1,4 +1,4 @@
-name: Cypress Sequential Tests - Folder 1
+name: API Test 8
 
 on:
   workflow_dispatch:
@@ -54,7 +54,6 @@ jobs:
           --key 9f3a7951-174e-44ef-8b8c-d21426b05bef
           --group "org-${{ matrix.spec_group }}"
           --tag "spec:${{ matrix.spec_group }},env:${{ github.event.inputs.environment }},org:${{ github.event.inputs.org_number }}"
-          --ci-build-id "${{ github.run_id }}-${{ matrix.spec_group }}"
           --spec "src/specs/kubernetes/${{ matrix.spec_group }}.js"
           --env environment=${{ github.event.inputs.environment }},orgNum=${{ github.event.inputs.org_number }},apiTimeout=${{ github.event.inputs.api_timeout }},parallelJobNumber=8
         env:
